@@ -13,11 +13,10 @@ _Repository purges confidential information._
 Tracks the hashes of all files in the specified folders (i.e., organized by projects). Please create "tracking_target" batch file to set folders to routinely check so that you will not ask your teammates for updates as often.
 
 > set here[1]="absolute_path_to_target_folder"
-
 > set here[2]="absolute_path_to_another_target_folder"
-
+> 
 > set this[1]="absolute_path_to_target_folder"
-
+>
 > set this[2]="absolute_path_to_another_target_folder"
 
 
