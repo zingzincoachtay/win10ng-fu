@@ -1,5 +1,5 @@
 [autorun]
-open=report.bat
+open=01-report.bat
 label=Report Installed Program
 action=Report Installed Program
 
