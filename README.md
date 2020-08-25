@@ -8,6 +8,8 @@ _GNU coreutils package is dependent. It's portable. It's amazing_
 
 _Repository purges confidential information._
 
+Working smart. Adapting to the restrictions. Mind the diminishing return. Learning to use computer for the sake of efficiency. Using is not in itself the purpose of computer.
+
 ### Generate a list of installed software
 
 Looks at the Programs and Features (Add or Remove Programs) and generate a list of installed software (e.g., third-party programs).
@@ -24,7 +26,15 @@ Precaution: Tested on Windows 7 and Windows XP. Have not tested in Windows 8, 8.
 
 ### Tracking Team Activities in the given folders
 
-Tracks the hashes of all files in the specified folders (i.e., organized by projects). Please create "tracking_target" batch file to set folders to routinely check so that you will not ask your teammates for updates as often.
+Inspiration: Purchasing department at the helm of new leadership initiated projects to formally document and archive agreements from the suppliers, while in response to the pandemic, the executive leadership initiated and tasked each department the cost relief project. The handling of all the concurrent projects has been a team effort but the variability in data entry and tracking progress was also inevitable and foreseen. I decided to drive the progress tracking for the team, assuring consistency of data, reviewing documents objectively, establishing scalable schema, then also allow for periodical report generating.
+
+Observation: Each project was being completed in its folders. Each project had its own destination folder. The folders were shared and files were added as the tasks were being completed, but the data was entered for tracking by one person.
+
+Weighing Options: Options were either tried-and-true (asking for updates, e.g.) or trying anew. SVN was a overkill and unnecessary for project-based needs. Little cryptography could easily flag for files that changed (without context of changes).
+
+Optimization: Generally, my experience in coordinating work requires consistent (if not so frequent) communication among team members. That is fine and it is indeed the standard of quality. I only wished that the workflow served better instead of adding the permutation of work to it. Challenge of project management is getting up to date information and generating data pertinent to the business decisions. Sun Tzu said: the battles won without fighting is superior to any victories. Only sourcing the updates from direct communication with the teammates not only choke the ability to see the big picture but also put unnecessary burden the team. Why eat a banana with a plate, a knife, and a fork? Run the script once a day to know if the changes exist instead of taking away minutes off of teammates.
+
+USAGE: Tracks the hashes of all files in the specified folders (e.g., organized by projects). Please create "tracking_target" batch file. It should set folders that would routinely be checked.
 
 > set here[1]="absolute_path_to_target_folder"
 >
@@ -35,4 +45,4 @@ Tracks the hashes of all files in the specified folders (i.e., organized by proj
 > set this[2]="absolute_path_to_another_target_folder"
 
 
-The program uses `here` and `this` in an array style. It will also overwrite the existing files if the names do not change when you desire them to change. The `%today%` variable is available because my workflow requires updates only daily. It is possible to extend `%today%` to times as well. Lastly, `here` and `this` must have the same array size, meaning `here[1]` and `this[1]` must exist mutually.
+The program uses `here` and `this` in an array style. It will also overwrite the existing files if the names do not change when you desire them to change. The `%today%` variable is available because I check for updates daily. It is possible to extend `%today%` to times as well, if you require checking multiple times a day. Lastly, `here` and `this` must have the same array size, meaning `here[1]` and `this[1]` must exist mutually (i.e., command `here` > `this`).
