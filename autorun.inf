@@ -1,0 +1,9 @@
+[autorun]
+open=report.bat
+label=Report Installed Program
+action=Report Installed Program
+
+[content]
+MusicFiles=false
+PictureFiles=false
+VideoFiles=false
