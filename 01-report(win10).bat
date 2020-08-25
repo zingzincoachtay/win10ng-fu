@@ -21,13 +21,24 @@ REM http://www.windows-commandline.com/current-logged-in-user-name-command/
 REM http://blogs.msdn.com/b/oldnewthing/archive/2005/01/28/362565.aspx
 
 
+REM wmic /output:"mine.txt" csproduct list full
+REM wmic /output:"mine.txt" computersystem list full
+REM wmic /output:"mine.txt" bios list full
+REM wmic /output:"mine.txt" softwareelement list full
+REM wmic /output:"mine.txt" softwarefeature list full
+
+
 SET list="C:\Users\%username%\Desktop\programs-%username%.txt"
 
-wmic product get name,vendor,version,urlinfoabout,installstate,language > %list%
+wmic /output:%list% product get name,vendor,version,description,installstate
 
-copy %list% "%CD%\list\%username%.txt" /V
-
-del %list%
+if not exist "%CD%\list\" (
+  ECHO Please create the `list` folder here: %CD%
+  PAUSE
+) else (
+  copy %list% "%CD%\list\%username%.txt" /V
+  del %list%
+)
 
 
 ECHO Task is complete!
