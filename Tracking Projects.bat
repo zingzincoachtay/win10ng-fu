@@ -17,7 +17,7 @@ echo[
 echo[
 
 for /l %%k in (1,1,3) do (
-  call :hashfile %%this[%%k]%% %%here[%%k]%%
+  call :hashfile %%here[%%k]%% %%this[%%k]%%
 )
 
 echo[
@@ -27,9 +27,9 @@ pause
 goto :EOF
 
 :hashfile
-if not exist %1 (
-  echo Digesting all quotes in %2
-  %md5% -r %2 | sort /+35 > %1
+if not exist %2 (
+  echo Digesting all quotes in %1
+  %md5% -r %1 | sort /+35 > %2
   echo ...Done
 )
 exit /b
