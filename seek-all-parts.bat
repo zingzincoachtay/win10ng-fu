@@ -29,11 +29,11 @@ set spit=%USERPROFILE%\Desktop\current-parts %today%.csv
 if not [%~3]==[] ( set spit=%~3 )
 rem Only include EXCEL files under "01 Current Quote"
 rem Exclude files for "SERVICE ONLY" parts and "BUILDOUT" parts
-type "%~1" "%~2" | %grep% "01 Current Quote" | %grep% "\.xlsx\?$" | %grep% -v "SERVICE ONLY" | %grep% -v "BUILDOUT" > %spit%
+type "%~1" "%~2" | %grep% "01 Current Quote" | %grep% "\.xlsx\?$" | %grep% -v "SERVICE ONLY" | %grep% -v "BUILDOUT" > "%spit%"
 
 rem       (HASH)  ((supplier-(part no) (part desc)-subfolder)-(file)(.ext))  vendor_part no_part desc_HASH_PATH_folder_ext
 set quotes=%USERPROFILE%\Desktop\Daily Project Progresses by HASH\quotes
-%sed% "s/^([A-z0-9]{32})\s+((.+\\([^\\]+)\\([^\\ ]+?) ([^\\]+)\\[^\\]+\\)([^\\]+)(\.xlsx?))$/\4\t\5\t\6\t\1\t\3\t\7\8/" %spit%
+%sed% "s/^([A-z0-9]{32})\s+((.+\\([^\\]+)\\([^\\ ]+?) ([^\\]+)\\[^\\]+\\)([^\\]+)(\.xlsx?))$/\4\t\5\t\6\t\1\t\3\t\7\8/" "%spit%"
 
 echo[
 pause
