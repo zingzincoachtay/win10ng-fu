@@ -11,8 +11,8 @@ echo Today's Timestamp %today%
 
 echo[
 echo Use either the md5deep package or md5sum package
-set md5=C:\Users\kaoki\Documents\md5deep-4.4\md5deep64.exe
-call "C:\Users\kaoki\Documents\tracking_target.bat"
+set md5=%USERPROFILE%\Documents\md5deep-4.4\md5deep64.exe
+call "%USERPROFILE%\Documents\tracking_target.bat"
 echo[
 echo[
 

@@ -8,21 +8,24 @@ rem Linux `grep` is aliased to `alias grep='grep --colour=auto'` in most distrib
 rem https://www.howtogeek.com/496056/how-to-use-the-grep-command-on-linux/
 rem Windows Command Prompt does not support coloration, but I retain it for cross-compatibility.
 rem Also, Windows filenames do not distinguish cases, `-i` for all queries.
-set grep=C:\Users\kaoki\Documents\coreutils\bin\grep.exe --colour=auto -i
+set grep=%USERPROFILE%\Documents\coreutils\bin\grep.exe --colour=auto -i
 rem `sed` does not use the extended regular expressions like Perl
 rem Would require escaping `{` `}` `+` `(` `)` and `?`
-set sed=C:\Users\kaoki\Documents\coreutils\bin\sed.exe -i -E
+set sed=%USERPROFILE%\Documents\coreutils\bin\sed.exe -i -E
+
+set today=%Date:~10,4%-%Date:~4,2%-%Date:~7,2%(%Date:~0,3%)
+echo Today's Timestamp %today%
 
 echo[
 echo First, concatenate (Linux:cat-equivalent) all lists of the same context
 echo Then, filter through only XLS(X) files
-rem Would love to use Perl to do grep + sed, but alas
+rem Would love to use Perl to do grep + sed, but
 
 rem Third argument is optional
 rem https://stackoverflow.com/questions/830565/how-can-i-check-if-an-argument-is-defined-when-starting-calling-a-batch-file
 rem Third argument is the output file. If unspecified, defaults to spit out file on Desktop
 
-set spit=%USERPROFILE%\Desktop\all-parts.csv
+set spit=%USERPROFILE%\Desktop\current-parts %today%.csv
 if not [%~3]==[] ( set spit=%~3 )
 rem Only include EXCEL files under "01 Current Quote"
 rem Exclude files for "SERVICE ONLY" parts and "BUILDOUT" parts

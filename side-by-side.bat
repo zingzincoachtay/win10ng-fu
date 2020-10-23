@@ -5,7 +5,7 @@ echo Highly recommend maximizing the prompt
 echo Set at 200 print columns
 echo Utilize Diffutils (Win) package
 rem --color option is not available
-set diff=C:\Users\kaoki\Documents\coreutils\bin\diff.exe
+set diff=%USERPROFILE%\Documents\coreutils\bin\diff.exe
 
 echo[
 echo Compare two indices and show differences side by side
