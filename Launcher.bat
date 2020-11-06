@@ -10,7 +10,7 @@ for /l %%k in (1,1,3) do (
   call :runforrest %%this[%%k]%% %%k
 )
 
-pause
+::pause
 goto :EOF
 
 :runforrest
