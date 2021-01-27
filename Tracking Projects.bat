@@ -17,6 +17,7 @@ ECHO Today's Timestamp %today%
 ECHO[
 ECHO Use either the md5deep package or md5sum package
 SET md5=%USERPROFILE%\Documents\md5deep-4.4\md5deep64.exe
+SET grep=%USERPROFILE%\Documents\coreutils\bin\grep.exe --colour=auto -i
 CALL "%USERPROFILE%\Documents\tracking_target.bat"
 ECHO[
 
@@ -37,7 +38,7 @@ GOTO :EOF
 :hashfile
 IF NOT EXIST %2 (
   ECHO Digesting all quotes in %1
-  %md5% -r %1 | sort /+35 > %2
+  %md5% -r %1 | sort /+35 | %grep% "01 Current Quote" | %grep% "\.xlsx\?$" | %grep% -v "SERVICE ONLY" | %grep% -v "BUILDOUT" > %2
   ECHO ...Done
 )
 EXIT /B
