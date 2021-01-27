@@ -24,8 +24,8 @@ echo First, concatenate (Linux:cat-equivalent) all lists of the same context
 echo Then, filter through only XLS(X) files
 rem Would love to use Perl to do grep + sed, but
 
-set spit=%USERPROFILE%\Desktop\current-parts %today%.csv
-:: 
+set spit=%USERPROFILE%\Desktop\%today% current-parts .csv
+::
 :: :: Only include EXCEL files under "01 Current Quote"
 :: :: Exclude files for "SERVICE ONLY" parts and "BUILDOUT" parts
 ECHO[
@@ -37,7 +37,7 @@ type "%~1" "%~2" | %grep% "01 Current Quote" | %grep% "\.xlsx\?$" | %grep% -v "S
 :: :: Instead of in-place edit and leaving a temporary file at every execution,
 :: ::     write into a common file to be shared with Excel,
 :: ::     then copy the common file to dated file.
-copy "%USERPROFILE%\Desktop\current-parts.csv" "%spit%"
+copy "%spit%" "%USERPROFILE%\Desktop\current-parts.csv"
 
 ::
 :: :: Third argument is optional
