@@ -21,7 +21,7 @@ SET grep=%USERPROFILE%\Documents\coreutils\bin\grep.exe --colour=auto -i
 CALL "%USERPROFILE%\Documents\tracking_target.bat"
 ECHO[
 
-FOR /l %%k in (1,1,3) DO (
+FOR /l %%k in (1,1,2) DO (
   CALL :hashfile %%here[%%k]%% %%this[%%k]%%
 )
 
@@ -29,8 +29,9 @@ ECHO[
 ECHO Reminder -- next step, Drag and Drop "*.sum" files from yesterday to the respective digests to compare changes and track the progress.
 
 echo .\seek-all-parts.bat %this[4]%
-echo .\seek-all-parts.bat %this[4]% "%here[4]%\current-parts.csv"
-.\seek-all-parts.bat %this[4]% "%here[4]%\current-parts.csv"
+echo .\seek-all-parts.bat "%here[4]%" "%here[4]%\current-parts.csv"
+:: .\seek-all-parts.bat %this[4]% "%here[4]%\current-parts.csv"
+.\seek-all-parts.bat "%here[4]%" "%here[4]%\current-parts.csv"
 
 PAUSE
 GOTO :EOF
