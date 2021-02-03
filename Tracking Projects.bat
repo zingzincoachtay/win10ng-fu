@@ -28,10 +28,10 @@ FOR /l %%k in (1,1,2) DO (
 ECHO[
 ECHO Reminder -- next step, Drag and Drop "*.sum" files from yesterday to the respective digests to compare changes and track the progress.
 
-echo .\seek-all-parts.bat %this[4]%
-echo .\seek-all-parts.bat "%here[4]%" "%here[4]%\current-parts.csv"
-:: .\seek-all-parts.bat %this[4]% "%here[4]%\current-parts.csv"
-.\seek-all-parts.bat "%here[4]%" "%here[4]%\current-parts.csv"
+set spit=%USERPROFILE%\Desktop\spit.csv
+type %this[1]% %this[2]% > "%spit%"
+echo .\seek-all-parts.bat %spit% "%here[4]%" "%this[4]%"
+.\seek-all-parts.bat "%spit%" "%here[4]%" "%this[4]%"
 
 PAUSE
 GOTO :EOF
@@ -39,7 +39,7 @@ GOTO :EOF
 :hashfile
 IF NOT EXIST %2 (
   ECHO Digesting all quotes in %1
-  %md5% -r %1 | sort /+35 | %grep% "01 Current Quote" | %grep% "\.xlsx\?$" | %grep% -v "SERVICE ONLY" | %grep% -v "BUILDOUT" > %2
+  %md5% -r %1 | sort /+35 | %grep% "01 Current Quote" | %grep% "\.xlsx\?$" | %grep% -iv "SERVICE ONLY" | %grep% -iv "BUILDOUT" > %2
   ECHO ...Done
 )
 EXIT /B
