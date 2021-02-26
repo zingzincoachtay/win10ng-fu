@@ -39,7 +39,7 @@ GOTO :EOF
 :hashfile
 IF NOT EXIST %2 (
   ECHO Digesting all quotes in %1
-  %md5% -r %1 | sort /+35 | %grep% "01 Current Quote" | %grep% "\.xlsx\?$" | %grep% -iv "SERVICE ONLY" | %grep% -iv "BUILDOUT" > %2
+  %md5% -r %1 | sort /+35 | %grep% "01 Current Quote" | %grep% "\.xlsx\?$" | %grep% -iv "SERVICE ONLY" | %grep% -iv "BUILDOUT" | %grep% -iv "~" > %2
   ECHO ...Done
 )
 EXIT /B

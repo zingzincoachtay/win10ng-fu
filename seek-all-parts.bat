@@ -35,8 +35,8 @@ set hurl=%USERPROFILE%\Desktop\parts-exception.csv
 ECHO[
 COPY "%~1" "%current%"
 DEL "%~1"
-::        (HASH)           ((asb       (supplier)\(part no) (desc) \ subf    \)(file)(.ext))    vendor_part no_part desc_HASH_PATH_folder_ext
-%sed% "s/^([A-z0-9]{32})\s+(([A-Z]:\\.+?\\([^\\]+)\\(\S+) ([^\\]+)\\[^\\]+\\)(\S+) ([^\\]+)\.xlsx?)$/\4\t\5\t\6\t\7\t\8\t\1\t\3\t\2/" "%current%" > "%spit%"
+::        (HASH)           ((asb       (supplier)\(part no) +(desc)\subf    \)(part no)(file)(.ext))    vendor_part no_part desc_HASH_PATH_folder_ext
+%sed% "s/^([A-z0-9]{32})\s+(([A-Z]:\\.+?\\([^\\]+)\\(\S+) +([^\\]+)\\[^\\]+\\)(\S+) +([^\\]+)\.xlsx?)$/\4\t\5\t\6\t\7\t\8\t\1\t\3\t\2/" "%current%" > "%spit%"
 :: :: Instead of in-place edit and leaving a temporary file at every execution, GNUwin SED behavior,
 :: ::     write into a common file to be shared with Excel,
 :: ::     then copy the common file to dated file. Look for Third argument option.
@@ -44,6 +44,10 @@ DEL "%~1"
 ECHO[
 ECHO Select out-of-ordinary to %hurl%
 %find% "%~2" -type f | %grep% -iv "01 Current Quote" | %grep% -iv "02 Previous Quotes" | %grep% -iv "03 Other Documents" | %grep% -iv "04 Service Quotes" | %grep% -i -e "current quote" -e "previous quote" -e "other document" -e "service quote" > "%hurl%"
+:: Use this to test the actual %hurl% output
+::   from coreutlis\bin folder
+:: find "" -type f | grep -iv "01 Current Quote" | grep -iv "02 Previous Quotes" | grep -iv "03 Other Documents" | grep -iv "04 Service Quotes"
+
 
 ::
 :: :: Third argument is optional

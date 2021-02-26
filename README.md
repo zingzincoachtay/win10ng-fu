@@ -10,7 +10,7 @@ _Purged confidential information before committing to the repository_
 
 Working smart. Adapting to the given resources. Mind the diminishing return. Use computing time for improved efficiency of daily tasks. Using is not in itself the purpose.
 
-### Generate a list of installed software
+### 01-Generate a list of installed software
 
 Looks at the Programs and Features (Add or Remove Programs) and generate a list of installed software (e.g., third-party programs).
 
@@ -22,15 +22,15 @@ Optimization: Reviewing the workflow, I minimized the manual repetitions. The Ba
 
 USAGE: Place `autorun.inf` and `report.bat` scripts in the root of the USB drive. Make sure the Batch program named in the `autorun.inf` match that of `report` file (if you renamed).
 
-Precaution: Tested on Windows 7 and Windows XP. Have not tested in Windows 8, 8.1, or 10. I may, eventually.
+Precaution: Tested on Windows 7 and Windows XP. Have not tested in Windows 8, 8.1, or 10.
 
 ### Tracking Team Activities in the given folders
 
-Inspiration: Purchasing department at the helm of new leadership initiated projects to archive documentations of the suppliers, while in response to the pandemic, the senior leadership initiated and tasked each department the cost relief project. The handling of all the concurrent projects has been a team effort but the variability in data entry and tracking progress was also inevitable and foreseen. I took the liberty to drive the progress tracking for the team, assuring consistency of data, reviewing documents objectively, establishing scalable database schema, then also allow for the periodical reproduceable report generating  .
+Inspiration: Purchasing department at the helm of new leadership initiated projects to archive documentations of the suppliers, while in response to the pandemic, the senior leadership initiated and tasked each department the cost relief project. The handling of all the concurrent projects has been a team effort but the variability in data entry and tracking progress was also inevitable and foreseen. I took the liberty to drive the progress tracking for the team, assuring consistency of data, reviewing documents objectively, establishing scalable database schema, then also allow for the periodical reproduceable report generating.
 
-Observation: Each project was being completed in its folders. Each project had its own destination folder. The folders were shared and files were added as the tasks were being completed, but the data was entered for tracking by one person.
+Observation: Each project was being completed in its folders. Each project had its own destination folder. The folders were shared and files were added and updated as the tasks were being completed, but the data was entered for tracking by one person.
 
-Weighing Options: Options were either tried-and-true (asking for updates, e.g.) or trying anew. SVN was a overkill and unnecessary for project-based needs. Little cryptography could easily flag for files that changed (without context of changes).
+Weighing Options: Options were either tried-and-true (asking for updates, e.g.) or trying anew. SVN was an overkill and unnecessary for project-based needs. Little cryptography could easily flag for files that changed (without context of changes).
 
 Optimization: Generally, my experience in coordinating work requires consistent (if not so frequent) communication among team members. That is fine and it is indeed the standard of quality. I only wished that the workflow served better instead of adding the permutation of work to it. Challenge of project management is getting up to date information and generating data pertinent to the business decisions. Sun Tzu said: the battles won without fighting is superior to any victories. Only sourcing the updates from direct communication with the teammates not only choke the ability to see the big picture but also put unnecessary burden the team. Why eat a banana with a plate, a knife, and a fork? Run the script once a day to know if the changes exist instead of taking away minutes off of teammates.
 
@@ -49,6 +49,20 @@ The program uses `here` and `this` in an array style. It will also overwrite the
 
 ### Simply Launcher
 
+Inspiration: I choose not to use the operating system default browsers for the privacy concern. Work computers are public computers, regardless of password protections. Going portable is appealing more appealing than going Live CD because of persistence. When I am moving on from the public computers, either I can take all my user data with me or delete it in there. Having said that, portable solutions that load all contents and settings to RAM would be even better. Say, Alpine Linux.
+
+Observation: I use the same alternative portable version of my favorite software (or favorite alternative to Windows-native PDF readers). Since I choose to not place any shortcut on the Desktop or Startup Menu, I would have to initiate an instance of the Explorer every morning with a few clicks per software.
+
+Weighing Options: I could download somebody else's launcher, or create a simple one with absolutely no frills. Unless, you would consider it a frill when the launcher closes itself after starting the target software.
+
+Precaution: I take security seriously. Use of the Portable Apps or the standalone version of programs is predicated on the assumption that the software does not attempt to access the privileged area of the operating system. You should note that the network-accessing programs may be detected by the system firewall, if enabled. That means that the programs accessing network would still pose as much risk as any admin installed programs. There is no immunity without vigilance. For me, the appeal of the Portable Apps is leaving no residual files when the program folders are deleted, including but not limited to .profile, .ini, .cache, or passwords of all kinds.
+
+### Excel data aggregator
+
 Inspiration:
 
-Precaution: I take security seriously. Use of the Portable Apps or the standalone version of programs is predicated on the assumption that the software does not attempt to access the privileged area of the operating system. You should note that the network-accessing programs may be detected by the system firewall, if enabled. That means that the programs accessing network would still pose as much risk as any admin installed programs. There is no immunity without vigilance. For me, the appeal of the Portable Apps is leaving no residual files when the program folders are deleted, including but not limited to .profile, .ini, .cache, or passwords of kinds.
+Observation:
+
+Weighing Options:
+
+Precaution:
