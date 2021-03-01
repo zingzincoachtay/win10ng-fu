@@ -1,17 +1,18 @@
-var Parent = [];
-Parent.push('H:\\PURCHASING\\02 QUOTES\\01 MATERIAL & COMPONENT Suppliers');
-Parent.push('H:\\PURCHASING\\02 QUOTES\\02 MOLDED PART Suppliers');
-const Target = 'C:\\Users\\kaoki\\Desktop\\current-parts.csv';
-const Column = 'H';
+const masked = require('./quotes-masked.js');
+var Parent = masked.folders;
+//Parent.push();
+const URIlist = 'C:\\Users\\kaoki\\Desktop\\current-parts.csv';
+const URIColumn = 'H';
+const SheetNamesVariants = [/^Sheet\d$/,/^Return form\s?\(\d\)$/];
 const NewHistCell = ['AA46','R46','I46'];
-const NewSubsCell = ['I46','I45','I40','I31']
-const OldHistCell = ['J69','I69'];
-const OldSubsCell = ['I69','I48','I35','I25'];
+const NewSubsCell = ['I46','I45','I40','I31'];//inherit the column from HistCell
+const OldHistCell = ['I69','J69'];
+const OldSubsCell = ['I69','I48','I35','I25'];//inherit the column from HistCell
 
 module.exports = {
   getParent: ()=>Parent,
-  getTarget: ()=>Target,
-  getColumn: ()=>Column,
+  getTarget: ()=>URIlist,
+  getColumn: ()=>URIColumn,
   getcellFingerprint: ()=>({
     "getNewCellHistFingerprint": NewHistCell,
     "getNewCellSubsFingerprint": NewSubsCell,
@@ -21,5 +22,6 @@ module.exports = {
   getNewCellHistFingerprint: ()=>NewHistCell,
   getNewCellSubsFingerprint: ()=>NewSubsCell,
   getOldCellHistFingerprint: ()=>OldHistCell,
-  getOldCellSubsFingerprint: ()=>OldSubsCell
+  getOldCellSubsFingerprint: ()=>OldSubsCell,
+  setSheetNamesVariants: ()=>SheetNamesVariants
 }
