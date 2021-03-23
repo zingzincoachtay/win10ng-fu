@@ -8,9 +8,7 @@ let yargs = process.argv.slice(2);
 let target = (yargs.length>0) ? yargs[0] : [];
 
 let Sheets = (typeof Excel.readFile(target) !== 'undefined') ? Excel.readFile(target) : [];
-let Sheet = (typeof Sheets.Sheets.Sheet1 !== 'undefined') ? Sheets.Sheets.Sheet1 : [];
-
-console.log(Sheets);
+//console.log(Sheets);
 console.log(Sheets.SheetNames);
 
 const SheetNamesVariants = [/^Sheet\d$/,/^Return form\s?\(\d\)$/];
@@ -22,14 +20,15 @@ Sheets.SheetNames.forEach((item, i) => {
 
 });
 
-
-console.log(Sheets.SheetNames.filter( (n)=>{
+//let Sheet = (typeof Sheets.Sheets.Sheet1 !== 'undefined') ? Sheets.Sheets.Sheet1 : [];
+let namedSheets = Sheets.SheetNames.filter( (n)=>{
   let isValid = new Set();
   SheetNamesVariants.forEach((reItem, i) => {
     isValid.add(reItem.test(n));
   });
   return isValid.has(true);
-  })
-);
-
+});
+//console.log(JSON.stringify( Sheets.Sheets[namedSheets[0]] ));
+console.log( Sheets.Sheets[namedSheets[0]] );
+console.log(namedSheets[0]);
 console.log(target);
