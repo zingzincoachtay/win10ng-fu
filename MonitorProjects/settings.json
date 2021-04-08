@@ -1,0 +1,6 @@
+{
+  "include" : {
+    "paths" : ["H:\\PURCHASING\\02 QUOTES\\01 MATERIAL & COMPONENT Suppliers","H:\\PURCHASING\\02 QUOTES\\02 MOLDED PART Suppliers"],
+    "rules" : ["01 Current Quote","xlsx|xls"]
+  }
+}

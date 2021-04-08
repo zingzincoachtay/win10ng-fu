@@ -1,0 +1,12 @@
+{
+  "name": "monitorprojects",
+  "version": "1.0.0",
+  "description": "Show the potential updates to your projects in one click",
+  "main": "exec.js",
+  "bin": "monitor.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tay",
+  "license": "GNU GPLv3"
+}
