@@ -1,40 +1,7 @@
 @ECHO OFF
-:: http://steve-jansen.github.io/guides/windows-batch-scripting/part-2-variables.html
-SETLOCAL ENABLEEXTENSIONS
-SET SELF=%~nx0
-SET SELFDIR=%~dp0
-
-ECHO[
-ECHO The day starts with checking for changes in the project folders.
-ECHO The data files may be updated or new files may have been added yesterday.
-ECHO[
-ECHO Use either the md5deep package or md5sum package
-ECHO[
-
 CALL "default-tools.bat"
-CALL "tracking-masked.bat"
-ECHO Today's Timestamp %today%
-ECHO[
+%find% "H:\PURCHASING\02 QUOTES\01 MATERIAL & COMPONENT Suppliers" "H:\PURCHASING\02 QUOTES\02 MOLDED PART Suppliers" "H:\PURCHASING\08 COST REDUCTION STUFF" -type f -regex ".+01 Current Quote.+\.xlsx?" -exec %hash% "{}" ; | %grep% -iv "SERVICE ONLY|BUILDOUT|~" | sort /+35 > "%USERPROFILE%\Desktop\%today% quotes.sum"
 
-FOR /l %%k in (1,1,2) DO (
-  CALL :hashfile %%here[%%k]%% %%this[%%k]%%
-)
+%sed% "s/^\W?([A-z0-9]{32})\s+\W?([A-Z]:\\.+?[\\\/]{1,2}([^\\\/]+)[\\\/]{1,2}(\S+?)\s+([^\\\/]+)[\\\/]{1,2}[^\\\/]+[\\\/]{1,2}(\S+?)\s+([^\\\/]+)\.xlsx?)$/\3\t\4\5\t\6\7\t\1\t\2\t\0/" "%USERPROFILE%\Desktop\%today% quotes.sum" > "%USERPROFILE%\Desktop\current-parts.csv"
 
-ECHO[
-ECHO Reminder -- next step, Drag and Drop "*.sum" files from yesterday to the respective digests to compare changes and track the progress.
-
-::set spit=%USERPROFILE%\Desktop\spit.csv
-::type %this[1]% %this[2]% > "%spit%"
-::echo .\seek-all-parts.bat %spit% "%here[4]%" "%this[4]%"
-::.\seek-all-parts.bat "%spit%" "%here[4]%" "%this[4]%"
-
-PAUSE
-GOTO :EOF
-
-:hashfile
-IF NOT EXIST %2 (
-  ECHO Digesting all quotes in %1
-  %md5% -r %1 | sort /+35 | %grep% "01 Current Quote" | %grep% "\.xlsx\?$" | %grep% -iv "SERVICE ONLY" | %grep% -iv "BUILDOUT" | %grep% -iv "~" > %2
-  ECHO ...Done
-)
-EXIT /B
+%find% "H:\PURCHASING\08 COST REDUCTION STUFF" -type f -regex "\.xlsx?" -exec %hash% "{}" ; | sort /+35 > "%USERPROFILE%\Desktop\%today% cr.sum"
