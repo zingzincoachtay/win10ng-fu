@@ -35,7 +35,8 @@ const getAllFiles = (root, files) => {
     if (fs.statSync(root + "/" + content).isDirectory())
       files = getAllFiles(root + "/" + content, files);
     else
-      files.push(path.join(__dirname, root, "/", content));
+      files.push(path.join(root, "/", content));
+      //files.push(path.join(__dirname, root, "/", content));
   });
 
   return files;
@@ -45,21 +46,23 @@ module.exports.findFiles = (roots, files) => {
     files = getAllFiles(root,files);
   return files;
 };
-const ruleTest = (o,rule) => (new RegExp(rule)).test(o);
+const ruleTest = (o,rule) => {
+  let exp = rule.match(/^(\W)(.+)\1$/);
+  if( exp !== null )  rule = exp[2];
+  return (new RegExp(rule)).test(o);
+}
 const isMatch = (o,pos,neg) => {
   let flags = new Set();
-  pos.forEach((rule, i) => {
+  for(let rule of pos)
     flags.add(  ruleTest(o,rule) );
-  });
-  neg.forEach((rule, i) => {
+  for(let rule of neg)
     flags.add( !ruleTest(o,rule) );
-  });
   return !flags.has(false);
 }
 module.exports.essentialFiles = (files, irules, xrules) => {
   let essence = [];
-  for(let file of files){console.log(file);
+  for(let file of files){
     if( isMatch(file,irules,xrules) ) essence.push( file );
   }
-  return essence.length;
+  return essence;
 }

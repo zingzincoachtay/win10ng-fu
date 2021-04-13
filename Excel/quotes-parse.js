@@ -2,16 +2,15 @@ const scope = require('./quotes-scope.js');
 var Excel;
 if(typeof require !== 'undefined') Excel = require('xlsx');
 
-const pickSheetName = function(proposedNames){
+const pickSheetName = (proposedNames) => {
   if(proposedNames.length==1) return proposedNames[0];
   let validNames = proposedNames.filter(function(n){
-    let isValid = new Set();
-    scope.setSheetNamesVariants().forEach( (reItem, i) => isValid.add(reItem.test(n)) )
+    let isValid = new Set( scope.setSheetNamesVariants.map( (re)=>re.test(n) ) );
     return isValid.has(true);
   });
   return (validNames.length>0) ? validNames[0] : '';
 }
-const getWBp = function(target){
+const getWBp = (target) => {
   let Sheets = (typeof Excel.readFile(target) !== 'undefined') ? Excel.readFile(target) : [];
   let SheetName = (typeof Sheets.SheetNames !== 'undefined') ? pickSheetName(Sheets.SheetNames) : '';
   if(SheetName.length==0) return [];//will stop when Sheets.SheetNames was undefined
@@ -24,14 +23,15 @@ const getColumn = function(target,column){
   var Lookout = Object.keys(Sheet).filter( (c)=>eye.test(c) );
   return Lookout.map( (r)=>Sheet[r].v );
 }
-const getColumns = function(target,columns){
-  let values = [];
-  columns.forEach((column, i) => {
-    values.push( getColumn(target,column) );
-  });
-  return values;
-}
+const getColumns = (target,columns) => columns.map( (column)=>getColumn(target,column) );
 
+const testType = function(data,fp){
+  //Workbook or Sheets were unexpected.
+  //Sheets were malformed.
+  let isUndef = new Set( fp.map( (jetty)=>(typeof data[jetty] === 'undefined') ));
+  let values = fp.map( (item)=>(typeof data[item] === 'undefined') ? 0 : data[item].v );
+  return {'likely':!isUndef.has(true),'values':values};
+}
 const getSheetType = function(target){
   let Sheet = getWBp(target);
   let fp = {
@@ -42,10 +42,10 @@ const getSheetType = function(target){
     'isnew':false,
     'isold':false
   };
-  fp.newcellhist = testType(Sheet,scope.getNewCellHistFingerprint());
-  fp.newcellsubs = testType(Sheet,scope.getNewCellSubsFingerprint());
-  fp.oldcellhist = testType(Sheet,scope.getOldCellHistFingerprint());
-  fp.oldcellsubs = testType(Sheet,scope.getOldCellSubsFingerprint());
+  fp.newcellhist = testType(Sheet,scope.getNewCellHistFingerprint);
+  fp.newcellsubs = testType(Sheet,scope.getNewCellSubsFingerprint);
+  fp.oldcellhist = testType(Sheet,scope.getOldCellHistFingerprint);
+  fp.oldcellsubs = testType(Sheet,scope.getOldCellSubsFingerprint);
   fp.isnew = (fp.newcellhist.likely && fp.newcellsubs.likely);
   // If the new form was not detected, assume the old form and be backward compatible.
   // Judge by Sheet['!ref']?
@@ -53,22 +53,11 @@ const getSheetType = function(target){
   fp.isold = (!fp.isnew);
   return fp;
 }
-const testType = function(data,fp){
-  let values = [];
-  //Workbook or Sheets were unexpected.
-  //Sheets were malformed.
-  let isUndef = new Set( fp.map( (jetty)=>(typeof data[jetty] === 'undefined') ));
-  fp.forEach((item, i) => {
-    values.push( (typeof data[item] === 'undefined') ? 0 : data[item].v );
-  });
-  return {'likely':!isUndef.has(true),'values':values};
-}
 
 const getDigest = function(uri){
   let readExcel = [];
   uri.forEach((addr, i) => {
     let SheetType = getSheetType(addr);
-    //console.log(addr); console.log(SheetType.newcellhist,SheetType.newcellsubs,SheetType.oldcellhist,SheetType.oldcellsubs,SheetType.isnew,SheetType.isold);
     if (!SheetType.isnew && !SheetType.isold) {
       // Maybe the sheet name is unexpected.
       // Maybe the sheet is not a quote.
@@ -83,55 +72,64 @@ const getDigest = function(uri){
   });
   return readExcel;
 }
-const iterableField = (data,values,field) => {
-  for(let k=1;k<field.length;k++){
-    for (const [key,jetty] of Object.entries(field[k]))
-      values[k][key] = (typeof data[jetty] === 'undefined') ? values[k][key] : data[jetty].v;
+const iterableField = (data,values,fields) => {
+  let o = fields;
+  for(let k=1;k<fields.length;k++){
+    for(const [key,jetty] of Object.entries(fields[k]))
+      o[k][key] = (typeof data[jetty] === 'undefined') ? o[k][key] : data[jetty].v;
   }
-  return field;
+  return o;
 }
-const getFieldValues = (data,v,xy) => {//console.log(JSON.stringify(v));console.log(JSON.stringify(xy));
-  v.basic.para = iterableField(data,[null,v.basic.para],[null,xy.basic.para]);
-  v.basic.prof = iterableField(data,[null,v.basic.prof],[null,xy.basic.prof]);
-  v.mat.para  = iterableField(data,[null, v.mat.para],[null, xy.mat.para]);  v.mat.prof  = iterableField(data, v.mat.prof , xy.mat.prof );
-  v.vmat.para = iterableField(data,[null,v.vmat.para],[null,xy.vmat.para]);  v.vmat.prof = iterableField(data, v.vmat.prof, xy.vmat.prof);
-  v.proc.para = iterableField(data,[null,v.proc.para],[null,xy.proc.para]);  v.proc.prof = iterableField(data, v.proc.prof, xy.proc.prof);
-  v.pack.para = iterableField(data,[null,v.pack.para],[null,xy.pack.para]);  v.pack.prof = iterableField(data, v.pack.prof, xy.pack.prof);
-  v.tally.para = iterableField(data,[null,v.tally.para],[null,xy.tally.para]);
-  v.tally.prof = iterableField(data,[null,v.tally.prof],[null,xy.tally.prof]);
-  return v;
+const getFieldValues = (data,v,xy) => {
+  let o = xy;
+  o.basic.para = iterableField(data,[null,v.basic.para],[null,xy.basic.para]); o.basic.para = o.basic.para[1];
+  o.tally.para = iterableField(data,[null,v.tally.para],[null,xy.tally.para]); o.tally.para = o.tally.para[1];
+  o.mat.para   = iterableField(data,[null, v.mat.para],[null, xy.mat.para]);  o.mat.para =  o.mat.para[1];
+  o.vmat.para  = iterableField(data,[null,v.vmat.para],[null,xy.vmat.para]); o.vmat.para = o.vmat.para[1];
+  o.proc.para  = iterableField(data,[null,v.proc.para],[null,xy.proc.para]); o.proc.para = o.proc.para[1];
+  o.pack.para  = iterableField(data,[null,v.pack.para],[null,xy.pack.para]); o.pack.para = o.pack.para[1];
+  o.basic.prof = iterableField(data,v.basic.prof,xy.basic.prof);
+  o.tally.prof = iterableField(data,v.tally.prof,xy.tally.prof);
+  o.mat.prof   = iterableField(data,  v.mat.prof,  xy.mat.prof);
+  o.vmat.prof  = iterableField(data, v.vmat.prof, xy.vmat.prof);
+  o.proc.prof  = iterableField(data, v.proc.prof, xy.proc.prof);
+  o.pack.prof  = iterableField(data, v.pack.prof, xy.pack.prof);
+  return o;
 }
-const iterablePage = (target,fields,cells) => {
+const iterablePage = (target,values,cells) => {
+  let o = cells;
   let Sheet = getWBp(target);
   for(let i in cells)
-    fields[i] = getFieldValues(Sheet,fields[i],cells[i]);
-  return fields;
+    o[i] = getFieldValues(Sheet,values[i],cells[i]);
+  return o;
 }
-const dumpExcel = function(uri){
-  let readExcel = [];
+const getDetail = function(uri){
+  let readExcel = new Array();
   let relativity = new Map();
   uri.forEach((addr, i) => {
     relativity.set(i,addr);
-    let template = scope.initForm();console.log(JSON.stringify(template.setOldFormDefault));console.log(JSON.stringify(template.setOldFormDefault));
-    let SheetType = getSheetType(addr);//console.log(addr);console.log(JSON.stringify(scope.setOldFormDefault()));console.log(JSON.stringify(scope.getOldCellPositions()));
+    let template = JSON.parse(scope.initForm);// Deep Copy
+    let SheetType = getSheetType(addr);
     if (!SheetType.isnew && !SheetType.isold) {
       // Maybe the sheet name is unexpected.
       // Maybe the sheet is not a quote.
       console.log(addr,SheetType.newcellhist,SheetType.newcellsubs,SheetType.oldcellhist,SheetType.oldcellsubs,SheetType.isnew,SheetType.isold);
     } else {
+      console.log("Reading: "+addr);
       readExcel.push(
-        (SheetType.isnew) ? Object.assign( {},{'sheet':i,'age':'new'}, iterablePage(addr,scope.setNewFormDefault(),scope.getNewCellPositions()) ) :
-        (SheetType.isold) ? Object.assign( {},{'sheet':i,'age':'old'}, iterablePage(addr,scope.setOldFormDefault(),scope.getOldCellPositions()) ) :
+        (SheetType.isnew) ? Object.assign( {'sheet':i,'age':'new'}, iterablePage(addr,template.setNewFormDefault,template.getNewCellPositions) ) :
+        (SheetType.isold) ? Object.assign( {'sheet':i,'age':'old'}, iterablePage(addr,template.setOldFormDefault,template.getOldCellPositions) ) :
                             {'sheet':i,'addr':addr,'error':'Irregular exception error: dumpExcel'}
       );
     }
   });
-  return readExcel;
+  return {"dump":readExcel,"index":relativity};
 }
 
 const pickLatest = (vals) => (vals.length==0) ? 0 : (vals[0]>0) ? vals[0] : pickLatest(vals.slice(1));
 const readCellValue = (data,jetty) => (typeof data[jetty] === 'undefined') ? 0 : data[jetty].v;
 
-module.exports.getColumn = getColumn;
+module.exports.getColumn  = getColumn;
+module.exports.getColumns = getColumns;
 module.exports.getDigest = getDigest;
-module.exports.dumpExcel = dumpExcel;
+module.exports.getDetail = getDetail;

@@ -16,9 +16,10 @@ try {
     }
     masked = monitor.maskedTarget(iniJSON);
 } catch (err) { console.error(err); }
-console.log(masked);
+//console.log(masked);
 
 let allFiles = monitor.findFiles(masked.include.paths,[]);
-console.log(allFiles.length);
+//console.log(allFiles.length);
 
-console.log( monitor.essentialFiles(allFiles,masked.include.rules,masked.exclude.rules) );
+let essential = monitor.essentialFiles(allFiles,masked.include.rules,masked.exclude.rules);
+for(let file of essential)  console.log( file );
