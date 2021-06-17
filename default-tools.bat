@@ -1,14 +1,14 @@
-echo Utilize FindUtils (GNUWin32) package
+ECHO Utilize FindUtils (GNUWin) package
 SET find=%USERPROFILE%\Documents\coreutils\bin\find.exe
 
-echo Utilize CoreUtils (GNUWin32) package
+ECHO Utilize CoreUtils (GNUWin) package
 SET hash=%USERPROFILE%\Documents\coreutils\bin\md5sum.exe
 
 :: Linux `grep` is aliased to `alias grep='grep --colour=auto'` in most distributions.
 :: https://www.howtogeek.com/496056/how-to-use-the-grep-command-on-linux/
 :: Windows Command Prompt does not support coloration, but I retain it for cross-compatibility.
 :: Also, Windows filenames do not distinguish cases unless specified, `-i` for all queries.
-ECHO Utilize Grep (GNUWin32) package
+ECHO Utilize Grep (GNUWin) package
 SET grep=%USERPROFILE%\Documents\coreutils\bin\grep.exe --colour=auto -i
 
 :: `sed` does not use the extended regular expressions like Perl
