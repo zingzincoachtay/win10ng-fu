@@ -1,4 +1,4 @@
-const masked = require('./quotes-masked.js');
+const masked = require('./excelligator-masked.js');
 //console.log(JSON.stringify(masked.getSubsNewFormDefault()));console.log(JSON.stringify(masked.getSubsNewFormPosition()));
 let NewFormVisibleCells = masked.SubsNewForm0Position;
 //console.log(JSON.stringify(masked.getSubsOldFormDefault()));console.log(JSON.stringify(masked.getSubsOldFormPosition()));
@@ -37,7 +37,7 @@ module.exports = {
   getIncludeRegex : masked.includeFilesRegex,
   getExcludeRegex : masked.excludeFilesRegex,
   getDependencies : masked.loadDependencies,
-  getURITarget : masked.URIlist,
+  getURITarget : masked.osURIlist,
   getURIColumn : masked.URIColumn,
   initSpread : {'maker':MakerColumn,'ospart':PartColumn,'target':masked.URIColumn},
   getCellFingerprint: {
@@ -61,5 +61,6 @@ module.exports = {
   setOldFormDefault   : masked.SubsOldForm0Malloc,
   getOldCellPositions : masked.SubsOldForm0Position,
   setSheetNamesVariants : masked.SheetNamesVariants,
-  getDatabaseKeys       : masked.dbKeys
+  getDatabaseBlueprint  : masked.dbBlueprint,
+  importJSONdata  : masked.importJSONdata
 }

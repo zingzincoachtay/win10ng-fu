@@ -1,19 +1,18 @@
 var fs = require('fs');
 var path = require('path');
 
-const getAllFiles = (root, files) => {
+const getAllPaths = (root, files) => {
   let contents = fs.readdirSync(root);
   console.log("Crawling here: "+root);
   files = files || [];
 
   contents.forEach(function(content) {
     if (fs.statSync(root + "\\" + content).isDirectory())
-      files = getAllFiles(root + "\\" + content, files);
+      files = getAllPaths(root + "\\" + content, files);
     else
       files.push(path.join(root, "\\", content));
       //files.push(path.join(__dirname, root, "/", content));
   });
-  console.log("N(Found): "+files.length);
   return files;
 }
 const ruleTest = (o,rule) => {
@@ -33,17 +32,15 @@ const isMatch = (o,pos,neg) => {
 
 module.exports.findFiles = (roots, files) => {
   for(let root of roots)
-    files = getAllFiles(root,files);
+    files = getAllPaths(root,files);
+  console.log("N(Found): "+files.length);
   return files;
 };
-module.exports.essentialFiles = (files, irules, xrules) => files.filter( (file)=>isMatch(file,irules,xrules) );
-
-
-const  getAbsPath = (root,relativePath) => root + '\\' + relativePath;
-const  isDir = (absolutePath) => fs.statSync(absolutePath).isDirectory();
-const  noDirs = function(paths){
-  paths.forEach((path, i) => {
-    if(isDir(path)) return false;
-  });
-  return true;
-}
+module.exports.findDirs = (roots, files) => {
+  for(let root of roots)
+    files = getAllPaths(root,files);
+  let dirs = new Set(files.map( (f)=>f.match(/^(.+\/)([^\\]+)$/).slice(1,-1) ).flat());
+  console.log("N(Found): "+Array.from(dirs).length);
+  return Array.from(dirs);
+};
+module.exports.getEssentials = (files, irules, xrules) => files.filter( (file)=>isMatch(file,irules,xrules) );

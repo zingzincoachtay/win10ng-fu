@@ -1,4 +1,4 @@
-const scope = require('./quotes-scope.js');
+const scope = require('./excelligator-scope.js');
 var Excel;
 if(typeof require !== 'undefined') Excel = require('xlsx');
 
@@ -28,8 +28,9 @@ const getColumns = (target,columns) => columns.map( (column)=>getColumn(target,c
 const testType = function(data,fp){
   //Workbook or Sheets were unexpected.
   //Sheets were malformed.
-  let isUndef = new Set( fp.map( (jetty)=>(typeof data[jetty] === 'undefined') ));
-  let values = fp.map( (item)=>(typeof data[item] === 'undefined') ? 0 : data[item].v );
+  let isUndef = new Set( fp.map( (jetty)=>(typeof data[jetty] === 'undefined')                     ));
+  //let values = fp.map( (jetty)=>(typeof data[jetty] === 'undefined') ? '' : data[jetty].f );
+  let values =           fp.map( (jetty)=>(typeof data[jetty] === 'undefined') ? 0 : data[jetty].v );
   return {'likely':!isUndef.has(true),'values':values};
 }
 const getSheetType = function(target){
@@ -72,28 +73,23 @@ const getDigest = function(uri){
   });
   return readExcel;
 }
+const csvsafe = (s) => s;
 const iterableField = (data,values,fields) => {
   let o = fields;
   for(let k=1;k<fields.length;k++){
     for(const [key,jetty] of Object.entries(fields[k]))
-      o[k][key] = (typeof data[jetty] === 'undefined') ? o[k][key] : data[jetty].v;
+      o[k][key] = (typeof data[jetty] === 'undefined') ? o[k][key] : csvsafe(data[jetty].v);// keep default values, or static string, "NF"?
   }
   return o;
 }
+const traverse = (trails,O) => (trails.length>0) ? traverse(trails.slice(1),O[trails[0]]) : O;
+const setfield = (trails,O) => ({[trails[0]]:(trails.length>1) ? setfield(trails.slice(1),O) : O});
 const getFieldValues = (data,v,xy) => {
   let o = xy;
-  o.basic.para = iterableField(data,[null,v.basic.para],[null,xy.basic.para]); o.basic.para = o.basic.para[1];
-  o.tally.para = iterableField(data,[null,v.tally.para],[null,xy.tally.para]); o.tally.para = o.tally.para[1];
-  o.mat.para   = iterableField(data,[null, v.mat.para],[null, xy.mat.para]);  o.mat.para =  o.mat.para[1];
-  o.vmat.para  = iterableField(data,[null,v.vmat.para],[null,xy.vmat.para]); o.vmat.para = o.vmat.para[1];
-  o.proc.para  = iterableField(data,[null,v.proc.para],[null,xy.proc.para]); o.proc.para = o.proc.para[1];
-  o.pack.para  = iterableField(data,[null,v.pack.para],[null,xy.pack.para]); o.pack.para = o.pack.para[1];
-  o.basic.prof = iterableField(data,v.basic.prof,xy.basic.prof);
-  o.tally.prof = iterableField(data,v.tally.prof,xy.tally.prof);
-  o.mat.prof   = iterableField(data,  v.mat.prof,  xy.mat.prof);
-  o.vmat.prof  = iterableField(data, v.vmat.prof, xy.vmat.prof);
-  o.proc.prof  = iterableField(data, v.proc.prof, xy.proc.prof);
-  o.pack.prof  = iterableField(data, v.pack.prof, xy.pack.prof);
+  for(let keydef of scope.getDatabaseBlueprint.dbKeyDefCol){
+    let trails = keydef.split(/\W+/g);
+    Object.assign(traverse(trails,o), iterableField(data, traverse(trails,v), traverse(trails,xy)) );
+  }
   return o;
 }
 const iterablePage = (target,values,cells) => {
@@ -103,11 +99,16 @@ const iterablePage = (target,values,cells) => {
     o[i] = getFieldValues(Sheet,values[i],cells[i]);
   return o;
 }
+const decodeURI = function(uri){
+  //let groups = uri.match(/^[A-Z]:(\\{1,2}).+\1([^\\\/]+)\1(\S+?)\s+([^\\\/]+)\1[^\\\/]+\1(\S+?)\s+([^\\\/]+)\.xlsx?$/);
+  let groups = uri.match( new RegExp(scope.getDatabaseBlueprint.dirinterpreter.re) );
+  return scope.getDatabaseBlueprint.dirinterpreter.pick.map( (e)=>groups[e] );
+}
 const getDetail = function(uri){
   let readExcel = new Array();
   let relativity = new Map();
   uri.forEach((addr, i) => {
-    relativity.set(i,addr);
+    relativity.set(i,decodeURI(addr));
     let template = JSON.parse(scope.initForm);// Deep Copy
     let SheetType = getSheetType(addr);
     if (!SheetType.isnew && !SheetType.isold) {
@@ -119,7 +120,7 @@ const getDetail = function(uri){
       readExcel.push(
         (SheetType.isnew) ? Object.assign( {'sheet':i,'age':'new'}, iterablePage(addr,template.setNewFormDefault,template.getNewCellPositions) ) :
         (SheetType.isold) ? Object.assign( {'sheet':i,'age':'old'}, iterablePage(addr,template.setOldFormDefault,template.getOldCellPositions) ) :
-                            {'sheet':i,'addr':addr,'error':'Irregular exception error: dumpExcel'}
+                            {'sheet':i,'addr':addr,'error':'Irregular exception error: getDetail'}
       );
     }
   });

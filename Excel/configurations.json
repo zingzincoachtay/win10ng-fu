@@ -1,0 +1,112 @@
+{
+  "projectrootfolders" : [
+    "H:\\PURCHASING\\02 QUOTES\\01 MATERIAL & COMPONENT Suppliers",
+    "H:\\PURCHASING\\02 QUOTES\\02 MOLDED PART Suppliers"
+  ],
+  "osURIlist" : "URIlist.csv",
+  "URIColumn" : "G",
+  "SheetNamesVariants" : ["^Sheet\\d$","^Return form\\s?\\(\\d\\)$"],
+  "includeFiles" : ["01 Current Quote.+xlsx?$"],
+  "excludeFiles" : ["SERVICE|BUILDOUT|~"],
+  "dirinterpreter" : {
+    "re"   : "^[A-Z]:(\\\\{1,2}).+\\1([^\\\\\\/]+)\\1(\\S+?)\\s+([^\\\/]+)\\1[^\\\\\\/]+\\1(\\S+?)\\s+([^\\\\\\/]+)\\.xlsx?$",
+    "pick" : [2,3,4,5,6,0]
+  },
+  "dependencies" : ["D:\\node-v14.16.0-win-x64\\xlsx"],
+  "dbKeyDefCol"  : [
+    "basic.para","basic.prof",
+      "mat.para",  "mat.prof",
+     "vmat.para", "vmat.prof",
+     "proc.para", "proc.prof",
+     "pack.para", "pack.prof",
+    "tally.para","tally.prof"
+  ],
+  "Referrer" : {
+    "path" : ["File Path"],
+    "basic": ["pnum","pnam","qnum","vqnum","vpnum","fdate","qdate","vnam","vrep","model"],
+      "mat": ["weight","_wt","_grade","_type","_desc","_unit_cost","_ratio","_qty","_subtot1","_subtot0"]
+  },
+  "dbDefCol"     : {
+    "basic.para" : {
+       "pnum" : {"name":"Part Number"        ,"init":null,"pos":{"n":[["C7"]],"o":[[ "B8"]]},"repeat":false},
+       "pnam" : {"name":"Part Name"          ,"init":null,"pos":{"n":[["I7"]],"o":[["B10"]]},"repeat":false},
+       "qnum" : {"name":"Quote Number"       ,"init":null,"pos":{"n":[["P7"]],"o":[[ "F8"]]},"repeat":false},
+      "vqnum" : {"name":"Vendor Quote Number","init":null,"pos":{"n":[["R7"]],"o":[[ "J8"]]},"repeat":false},
+      "vpnum" : {"name":"Vendor Part Number" ,"init":null,"pos":{"n":[["F7"]],"o":[[ "A1"]]},"repeat":false}
+    },
+    "basic.prof" : {
+      "fdate" : {"name":"Effective Date","init":null,"pos":{"n":[["W12&X12&Y12","N12&O12&P12","E12&F12&G12"]],"o":[["F12"]]},"repeat":false},
+      "qdate" : {"name":"Quoted Date"   ,"init":null,"pos":{"n":[["W13&X13&Y13","N13&O13&P13","E13&F13&G13"]],"o":[["J12"]]},"repeat":false},
+       "vnam" : {"name":"Vendor Name"   ,"init":null,"pos":{"n":{"c":["W","N","E"],"r":[14,14]},"o":[["J10"]]},"repeat":false},
+       "vrep" : {"name":"Sales Rep"     ,"init":null,"pos":{"n":[["AA14","R14","I14"]],"o":[["M10"]]},"repeat":false},
+      "model" : {"name":"Model Code"    ,"init":null,"pos":{"n":[[ "W15","N15","E15"]],"o":[["M12"]]},"repeat":false}
+    },
+    "mat.para" : {
+      "weight" : {"name":"Part Weight","init":0,"pos":{"n":{"c":["W","N","E"],"r":[19,19]},"o":{"c":["A"],"r":[1,1]}},"repeat":false  }
+    },
+    "mat.prof" : {
+      "_wt"       : {"name":"WT"         ,"init":   0,"pos":{"n":{"c":[ "Y","P","G"],"r":[21,30]},"o":{"c":["E"],"r":[19,24]}},"repeat":true},
+      "_grade"    : {"name":"Grade"      ,"init":null,"pos":{"n":{"c":[ "A","A","A"],"r":[21,30]},"o":{"c":["D"],"r":[19,24]}},"repeat":true},
+      "_type"     : {"name":"Material"   ,"init":null,"pos":{"n":{"c":[ "A","A","A"],"r":[21,30]},"o":{"c":["A"],"r":[19,24]}},"repeat":true},
+      "_desc"     : {"name":"Description","init":null,"pos":{"n":{"c":[ "U","L","C"],"r":[21,30]},"o":{"c":["B"],"r":[19,24]}},"repeat":true},
+      "_unit_cost": {"name":"Unit Price" ,"init":   0,"pos":{"n":{"c":[ "Z","Q","H"],"r":[21,30]},"o":{"c":["H"],"r":[19,24]}},"repeat":true},
+      "_ratio"    : {"name":"Ratio"      ,"init":   0,"pos":{"n":{"c":[ "X","O","F"],"r":[21,30]},"o":{"c":["F"],"r":[19,24]}},"repeat":true},
+      "_qty"      : {"name":"QTY"        ,"init":   0,"pos":{"n":{"c":[ "X","O","F"],"r":[21,30]},"o":{"c":["G"],"r":[19,24]}},"repeat":true},
+      "_subtot1"  : {"name":"Subtotal Rev1"   ,"init":   0,"pos":{"n":{"c":["AA","R","I"],"r":[21,30]},"o":{"c":["I"],"r":[19,24]}},"repeat":true},
+      "_subtot0"  : {"name":"Subtotal Rev0"   ,"init":   0,"pos":{"n":{"c":[ "A","A","A"],"r":[21,30]},"o":{"c":["J"],"r":[19,24]}},"repeat":true}
+    },
+    "vmat.para" : {
+    },
+    "vmat.prof" : {
+      "_wt"       : {"name":"WT"         ,"init":   0,"pos":{"n":{"c":[ "Y","P","G"],"r":[21,30]},"o":{"c":["E"],"r":[31,34]}},"repeat":true},
+      "_grade"    : {"name":"Grade"      ,"init":null,"pos":{"n":{"c":[ "A","A","A"],"r":[21,30]},"o":{"c":["D"],"r":[31,34]}},"repeat":true},
+      "_type"     : {"name":"Material"   ,"init":null,"pos":{"n":{"c":[ "A","A","A"],"r":[21,30]},"o":{"c":["A"],"r":[31,34]}},"repeat":true},
+      "_desc"     : {"name":"Description","init":null,"pos":{"n":{"c":[ "U","L","C"],"r":[21,30]},"o":{"c":["B"],"r":[31,34]}},"repeat":true},
+      "_unit_cost": {"name":"Unit Price" ,"init":   0,"pos":{"n":{"c":[ "Z","Q","H"],"r":[21,30]},"o":{"c":["H"],"r":[31,34]}},"repeat":true},
+      "_ratio"    : {"name":"Ratio"      ,"init":   0,"pos":{"n":{"c":[ "X","O","F"],"r":[21,30]},"o":{"c":["F"],"r":[31,34]}},"repeat":true},
+      "_qty"      : {"name":"QTY"        ,"init":   0,"pos":{"n":{"c":[ "X","O","F"],"r":[21,30]},"o":{"c":["G"],"r":[31,34]}},"repeat":true},
+      "_subtot1"  : {"name":"Subtotal Rev1"   ,"init":   0,"pos":{"n":{"c":["AA","R","I"],"r":[21,30]},"o":{"c":["I"],"r":[31,34]}},"repeat":true},
+      "_subtot0"  : {"name":"Subtotal Rev0"   ,"init":   0,"pos":{"n":{"c":[ "A","A","A"],"r":[21,30]},"o":{"c":["J"],"r":[31,34]}},"repeat":true}
+    },
+    "proc.para" : {
+    },
+    "proc.prof" : {
+      "_cavities"   : {"name":"Cavities"    ,"init":   0,"pos":{"n":{"c":[ "X","O","F"],"r":[33,39]},"o":{"c":["G"],"r":[41,47]}},"repeat":true},
+      "_type"       : {"name":"Process"     ,"init":null,"pos":{"n":{"c":[ "U","L","C"],"r":[33,39]},"o":{"c":["A"],"r":[41,47]}},"repeat":true},
+      "_machine"    : {"name":"Tool"        ,"init":null,"pos":{"n":{"c":[ "U","L","C"],"r":[33,39]},"o":{"c":["B"],"r":[41,47]}},"repeat":true},
+      "_desc"       : {"name":"Description" ,"init":null,"pos":{"n":{"c":[ "U","L","C"],"r":[33,39]},"o":{"c":["C"],"r":[41,47]}},"repeat":true},
+      "_cycle_time" : {"name":"Cycle Time"  ,"init":   0,"pos":{"n":{"c":[ "Y","P","G"],"r":[33,39]},"o":{"c":["E"],"r":[41,47]}},"repeat":true},
+      "_press_rate" : {"name":"Press Rate"  ,"init":   0,"pos":{"n":{"c":[ "Z","Q","H"],"r":[33,39]},"o":{"c":["F"],"r":[41,47]}},"repeat":true},
+      "_subtot1"    : {"name":"Subtotal Rev1"    ,"init":   0,"pos":{"n":{"c":["AA","R","I"],"r":[33,39]},"o":{"c":["I"],"r":[41,47]}},"repeat":true},
+      "_subtot0"    : {"name":"Subtotal Rev0"    ,"init":   0,"pos":{"n":{"c":[ "A","A","A"],"r":[33,39]},"o":{"c":["J"],"r":[41,47]}},"repeat":true}
+    },
+    "pack.para" : {
+    },
+    "pack.prof" : {
+      "_qty"        : {"name":"QTY"         ,"init":   0,"pos":{"n":{"c":["A","A","A"],"r":[33,39]},"o":{"c":["H"],"r":[54,57]}},"repeat":true},
+      "_id"         : {"name":"Pack"        ,"init":null,"pos":{"n":{"c":["A","A","A"],"r":[33,39]},"o":{"c":["A"],"r":[54,57]}},"repeat":true},
+      "_machine"    : {"name":"Tool"        ,"init":null,"pos":{"n":{"c":["A","A","A"],"r":[33,39]},"o":{"c":["B"],"r":[54,57]}},"repeat":true},
+      "_desc"       : {"name":"Description" ,"init":null,"pos":{"n":{"c":["A","A","A"],"r":[33,39]},"o":{"c":["C"],"r":[54,57]}},"repeat":true},
+      "_mat_cost"   : {"name":"Unit Price"  ,"init":   0,"pos":{"n":{"c":["A","A","A"],"r":[33,39]},"o":{"c":["F"],"r":[54,57]}},"repeat":true},
+      "_labor_cost" : {"name":"Labor Rate"  ,"init":   0,"pos":{"n":{"c":["A","A","A"],"r":[33,39]},"o":{"c":["G"],"r":[54,57]}},"repeat":true},
+      "_subtot1"    : {"name":"Subtotal Rev1"    ,"init":   0,"pos":{"n":{"c":["A","A","A"],"r":[33,39]},"o":{"c":["I"],"r":[54,57]}},"repeat":true},
+      "_subtot0"    : {"name":"Subtotal Rev0"    ,"init":   0,"pos":{"n":{"c":["A","A","A"],"r":[33,39]},"o":{"c":["J"],"r":[54,57]}},"repeat":true}
+    },
+    "tally.para" : {
+      "sga%"    : {"name":"SG&A %"  ,"init":   0,"pos":{"n":{"c":["Z","Q","H"],"r":[41,41]},"o":{"c":["H"],"r":[62,62]}},"repeat":false},
+      "profit%" : {"name":"Profit %","init":   0,"pos":{"n":{"c":["Z","Q","H"],"r":[42,42]},"o":{"c":["H"],"r":[64,64]}},"repeat":false}
+    },
+    "tally.prof" : {
+      "total"       : {"name":"Current Total"      ,"init":   0,"pos":{"n":{"c":["AA","R","I"],"r":[46,46]},"o":{"c":["I","J"],"r":[68,68]}},"repeat":false},
+      "mat_subtot"  : {"name":"Material Sub"       ,"init":   0,"pos":{"n":{"c":["AA","R","I"],"r":[31,31]},"o":{"c":["I","J"],"r":[25,25]}},"repeat":false},
+      "vmat_subtot" : {"name":"Vendor Material Sub","init":   0,"pos":{"n":{"c":["AA","R","I"],"r":[31,31]},"o":{"c":["I","J"],"r":[35,35]}},"repeat":false},
+      "proc_subtot" : {"name":"Process Sub"        ,"init":   0,"pos":{"n":{"c":["AA","R","I"],"r":[40,40]},"o":{"c":["I","J"],"r":[48,48]}},"repeat":false},
+      "pack_subtot" : {"name":"Pack Sub"           ,"init":   0,"pos":{"n":{"c":["AA","R","I"],"r":[ 1, 1]},"o":{"c":["I","J"],"r":[58,58]}},"repeat":false},
+      "sga"         : {"name":"SG&A Sub"           ,"init":   0,"pos":{"n":{"c":["AA","R","I"],"r":[41,41]},"o":{"c":["I","J"],"r":[62,62]}},"repeat":false},
+      "profit"      : {"name":"Profit Sub"         ,"init":   0,"pos":{"n":{"c":["AA","R","I"],"r":[42,42]},"o":{"c":["I","J"],"r":[64,64]}},"repeat":false},
+      "packing"     : {"name":"Packing Sub"        ,"init":   0,"pos":{"n":{"c":["AA","R","I"],"r":[43,43]},"o":{"c":["I","J"],"r":[65,65]}},"repeat":false},
+      "matvmat_subtot": {"name":"Materials Sub"  ,"init":   0,"pos":{"n":{"c":["AA","R","I"],"r":[ 1, 1]},"o":{"c":["I","J"],"r":[61,61]}},"repeat":false},
+      "process_subtot": {"name":"Process SubSub" ,"init":   0,"pos":{"n":{"c":["AA","R","I"],"r":[ 1, 1]},"o":{"c":["I","J"],"r":[63,63]}},"repeat":false}
+    }
+  }
+}
