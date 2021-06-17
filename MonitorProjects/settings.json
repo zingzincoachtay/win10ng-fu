@@ -1,6 +1,16 @@
 {
   "include" : {
-    "paths" : ["H:\\PURCHASING\\02 QUOTES\\01 MATERIAL & COMPONENT Suppliers","H:\\PURCHASING\\02 QUOTES\\02 MOLDED PART Suppliers"],
-    "rules" : ["01 Current Quote","xlsx|xls"]
+    "paths" : [
+       "H:\\PURCHASING\\02 QUOTES\\01 MATERIAL & COMPONENT Suppliers"
+      ,"H:\\PURCHASING\\02 QUOTES\\02 MOLDED PART Suppliers"
+      ,"H:\\PURCHASING\\08 COST REDUCTION STUFF"
+    ],
+    "rules" : ["/01 Current Quote.+xlsx?$/"]
+  },
+  "exclude" :{
+    "paths" :[
+       "H:\\PURCHASING\\08 COST REDUCTION STUFF\\OLD"
+    ],
+    "rules" : ["/SERVICE|BUILDOUT|~/"]
   }
 }

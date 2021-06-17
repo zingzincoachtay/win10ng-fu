@@ -8,5 +8,6 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Tay",
-  "license": "GNU GPLv3"
+  "license": "GNU GPLv3",
+  "dependencies": {}
 }

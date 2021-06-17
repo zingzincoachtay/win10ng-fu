@@ -1,7 +1,7 @@
-echo Utilize FindUtils (GNUWin) package
+ECHO Utilize FindUtils (GNUWin) package
 SET find=%USERPROFILE%\Documents\coreutils\bin\find.exe
 
-echo Utilize CoreUtils (GNUWin) package
+ECHO Utilize CoreUtils (GNUWin) package
 SET hash=%USERPROFILE%\Documents\coreutils\bin\md5sum.exe
 
 :: Linux `grep` is aliased to `alias grep='grep --colour=auto'` in most distributions.
@@ -18,6 +18,14 @@ SET grep=%USERPROFILE%\Documents\coreutils\bin\grep.exe --colour=auto -i
 :: However, this temporary file is not deleted automatically at the end of execution.
 ECHO Utilize Sed (GNUWin) package
 SET sed=%USERPROFILE%\Documents\coreutils\bin\sed.exe -E
+
+:: `find` did not follow some paths. Perhaps, a permission trouble.
+:: An alternative to `find` + `md5sum`, md5deep has a built-in recursive mode.
+:: While the output is slightly different (w/o single \W character denoting the file
+::   type at the head of hash value and file paths), the difference can be nullified
+::   using the RegExp.
+ECHO Utilize md5deep (http://md5deep.sourceforge.net) package
+SET md5=%USERPROFILE%\Documents\md5deep-4.4\md5deep64.exe -r -e -k -o -f
 
 :: https://oscarliang.com/change-date-ouput-format-windows-batch-script/
 :: SET today=%Date:~10,4%-%Date:~4,2%-%Date:~7,2%(%Date:~0,3%)%Time:~0,2%-%Time:~3,2%-%Time:~6,2%

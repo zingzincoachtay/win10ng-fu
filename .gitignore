@@ -1,3 +1,5 @@
 # masked file
+settings.json
 tracking-masked.bat
-quotes-masked.js
+quoted*
+candidate*
