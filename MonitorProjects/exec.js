@@ -32,10 +32,10 @@ const getAllFiles = (root, files) => {
   files = files || [];
 
   contents.forEach(function(content) {
-    if (fs.statSync(root + "/" + content).isDirectory())
-      files = getAllFiles(root + "/" + content, files);
+    if (fs.statSync(root + "\\" + content).isDirectory())
+      files = getAllFiles(root + "\\" + content, files);
     else
-      files.push(path.join(root, "/", content));
+      files.push(path.join(root, "\\", content));
       //files.push(path.join(__dirname, root, "/", content));
   });
 
@@ -59,10 +59,4 @@ const isMatch = (o,pos,neg) => {
     flags.add( !ruleTest(o,rule) );
   return !flags.has(false);
 }
-module.exports.essentialFiles = (files, irules, xrules) => {
-  let essence = [];
-  for(let file of files){
-    if( isMatch(file,irules,xrules) ) essence.push( file );
-  }
-  return essence;
-}
+module.exports.essentialFiles = (files, irules, xrules) => files.filter( (file)=>isMatch(file,irules,xrules) );
