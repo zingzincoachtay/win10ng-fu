@@ -3,12 +3,11 @@ var Excel;
 if(typeof require !== 'undefined') Excel = require('xlsx');
 
 const pickSheetName = (proposedNames) => {
-  if(proposedNames.length==1) return proposedNames[0];
   let validNames = proposedNames.filter(function(n){
-    let isValid = new Set( scope.setSheetNamesVariants.map( (re)=>re.test(n) ) );
-    return isValid.has(true);
+    let isValid = scope.setSheetNamesVariants.map( (re)=>re.test(n) );
+    return isValid.includes(true);
   });
-  return (validNames.length>0) ? validNames[0] : '';
+  return (validNames.length==0) ? '' : validNames[0];
 }
 const getWBp = (target) => {
   let Sheets = (typeof Excel.readFile(target) !== 'undefined') ? Excel.readFile(target) : [];
@@ -17,21 +16,14 @@ const getWBp = (target) => {
   let Sheet = (typeof Sheets.Sheets[SheetName] !== 'undefined') ? Sheets.Sheets[SheetName] : [];
   return Sheet;
 }
-const getColumn = function(target,column){
-  const eye = new RegExp('^'+column,'i');
-  let Sheet = getWBp(target);
-  var Lookout = Object.keys(Sheet).filter( (c)=>eye.test(c) );
-  return Lookout.map( (r)=>Sheet[r].v );
-}
-const getColumns = (target,columns) => columns.map( (column)=>getColumn(target,column) );
 
 const testType = function(data,fp){
-  //Workbook or Sheets were unexpected.
-  //Sheets were malformed.
-  let isUndef = new Set( fp.map( (jetty)=>(typeof data[jetty] === 'undefined')                     ));
+  //Workbook or Sheets were unexpected, were malformed.
+  let isUndef = fp.map( (jetty)=>(typeof data[jetty] === 'undefined')                     );
+  //to extract and compare `calculated` vs `entered`
   //let values = fp.map( (jetty)=>(typeof data[jetty] === 'undefined') ? '' : data[jetty].f );
-  let values =           fp.map( (jetty)=>(typeof data[jetty] === 'undefined') ? 0 : data[jetty].v );
-  return {'likely':!isUndef.has(true),'values':values};
+  let values =  fp.map( (jetty)=>(typeof data[jetty] === 'undefined') ? 0 : data[jetty].v );
+  return {'likely':!isUndef.includes(true),'values':values};
 }
 const getSheetType = function(target){
   let Sheet = getWBp(target);
@@ -55,24 +47,8 @@ const getSheetType = function(target){
   return fp;
 }
 
-const getDigest = function(uri){
-  let readExcel = [];
-  uri.forEach((addr, i) => {
-    let SheetType = getSheetType(addr);
-    if (!SheetType.isnew && !SheetType.isold) {
-      // Maybe the sheet name is unexpected.
-      // Maybe the sheet is not a quote.
-      console.log(addr,SheetType.newcellhist,SheetType.newcellsubs,SheetType.oldcellhist,SheetType.oldcellsubs,SheetType.isnew,SheetType.isold);
-    } else {
-      readExcel.push(
-        (SheetType.isnew) ? {'sheet':addr,'age':'new','total':pickLatest(SheetType.newcellhist.values)} :
-        (SheetType.isold) ? {'sheet':addr,'age':'old','total':pickLatest(SheetType.oldcellhist.values)} :
-                            {'sheet':i,'addr':addr,'error':'Irregular exception error: getDigest'}
-      );
-    }
-  });
-  return readExcel;
-}
+const traverse = (trails,O) => (trails.length>0) ? traverse(trails.slice(1),O[trails[0]]) : O;
+//const setfield = (trails,O) => ({[trails[0]]:(trails.length>1) ? setfield(trails.slice(1),O) : O});
 const csvsafe = (s) => s;
 const iterableField = (data,values,fields) => {
   let o = fields;
@@ -82,8 +58,6 @@ const iterableField = (data,values,fields) => {
   }
   return o;
 }
-const traverse = (trails,O) => (trails.length>0) ? traverse(trails.slice(1),O[trails[0]]) : O;
-const setfield = (trails,O) => ({[trails[0]]:(trails.length>1) ? setfield(trails.slice(1),O) : O});
 const getFieldValues = (data,v,xy) => {
   let o = xy;
   for(let keydef of scope.getDatabaseBlueprint.dbKeyDefCol){
@@ -100,11 +74,41 @@ const iterablePage = (target,values,cells) => {
   return o;
 }
 const decodeURI = function(uri){
-  //let groups = uri.match(/^[A-Z]:(\\{1,2}).+\1([^\\\/]+)\1(\S+?)\s+([^\\\/]+)\1[^\\\/]+\1(\S+?)\s+([^\\\/]+)\.xlsx?$/);
   let groups = uri.match( new RegExp(scope.getDatabaseBlueprint.dirinterpreter.re) );
   return scope.getDatabaseBlueprint.dirinterpreter.pick.map( (e)=>groups[e] );
 }
-const getDetail = function(uri){
+const completePages = (common,pages) => pages.map( (p)=>Object.assign(common,p) );
+// expectation: [{common,p1},{common,p2},{common,p3}]
+// error: [{common,p3},{common,p3},{common,p3}]
+
+const readCellValue = (data,jetty) => (typeof data[jetty] === 'undefined') ? 0 : data[jetty].v;
+
+module.exports.getColumn = (target,columns) => columns.map( (column)=>function(target,column){
+  let Sheet = getWBp(target);
+  let Lookout = Object.keys(Sheet).filter( (c)=>(new RegExp('^'+column,'i')).test(c) );
+  return Lookout.map( (r)=>Sheet[r].v );
+} );
+
+const pickLatest = (vals) => (vals.length==0) ? 0 : (vals[0]>0) ? vals[0] : pickLatest(vals.slice(1));
+module.exports.getDigest = function(uri,readExcel=[]){
+  uri.forEach((addr, i) => {
+    let SheetType = getSheetType(addr);
+    if (!SheetType.isnew && !SheetType.isold) {
+      // Maybe the sheet name is unexpected.
+      // Maybe the sheet is not a quote.
+      console.log(addr,SheetType.newcellhist,SheetType.newcellsubs,SheetType.oldcellhist,SheetType.oldcellsubs,SheetType.isnew,SheetType.isold);
+    } else {
+      readExcel.push(
+        (SheetType.isnew) ? {'sheet':addr,'age':'new','total':pickLatest(SheetType.newcellhist.values)} :
+        (SheetType.isold) ? {'sheet':addr,'age':'old','total':pickLatest(SheetType.oldcellhist.values)} :
+                            {'sheet':i,'addr':addr,'error':'Irregular exception error: getDigest'}
+      );
+    }
+  });
+  return readExcel;
+}
+
+module.exports.getDetail = function(uri){
   let readExcel = new Array();
   let relativity = new Map();
   uri.forEach((addr, i) => {
@@ -114,23 +118,15 @@ const getDetail = function(uri){
     if (!SheetType.isnew && !SheetType.isold) {
       // Maybe the sheet name is unexpected.
       // Maybe the sheet is not a quote.
-      console.log(addr,SheetType.newcellhist,SheetType.newcellsubs,SheetType.oldcellhist,SheetType.oldcellsubs,SheetType.isnew,SheetType.isold);
+      console.log(addr,SheetType.newcellhist,SheetType.newcellsubs,SheetType.oldcellhist,SheetType.oldcellsubs,SheetType.isnew,SheetType.isold);let;
     } else {
       console.log("Reading: "+addr);
-      readExcel.push(
-        (SheetType.isnew) ? Object.assign( {'sheet':i,'age':'new'}, iterablePage(addr,template.setNewFormDefault,template.getNewCellPositions) ) :
-        (SheetType.isold) ? Object.assign( {'sheet':i,'age':'old'}, iterablePage(addr,template.setOldFormDefault,template.getOldCellPositions) ) :
-                            {'sheet':i,'addr':addr,'error':'Irregular exception error: getDetail'}
+      readExcel.push(//aoa
+        (SheetType.isnew) ? iterablePage(addr,template.setNewFormDefault,template.getNewCellPositions).map( (p)=>Object.assign({'sheet':i,'age':'new'},p) ) :
+        (SheetType.isold) ? iterablePage(addr,template.setOldFormDefault,template.getOldCellPositions).map( (p)=>Object.assign({'sheet':i,'age':'old'},p) ) :
+                            [{'sheet':i,'addr':addr,'error':'Irregular exception error: getDetail'}]
       );
     }
   });
-  return {"dump":readExcel,"index":relativity};
-}
-
-const pickLatest = (vals) => (vals.length==0) ? 0 : (vals[0]>0) ? vals[0] : pickLatest(vals.slice(1));
-const readCellValue = (data,jetty) => (typeof data[jetty] === 'undefined') ? 0 : data[jetty].v;
-
-module.exports.getColumn  = getColumn;
-module.exports.getColumns = getColumns;
-module.exports.getDigest = getDigest;
-module.exports.getDetail = getDetail;
+  return {"dump":readExcel.flat(),"index":relativity};
+};

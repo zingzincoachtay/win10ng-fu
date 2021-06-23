@@ -63,10 +63,10 @@ for(let name of configurations.dbKeyDefCol){
   //  First make all O.pos.(n|o) into an array of arrays
   //
   for(let [col,par] of Object.entries(configurations.dbDefCol[name])){
-      for(let backcompat of Object.keys(par.pos)){   // 'n' or 'o', e.g.
-        let xy = par.pos[backcompat];
-        par.pos[backcompat] = !(typeof xy.r === 'undefined' || typeof xy.c === 'undefined') ? constructXY([],range(par.pos[backcompat].r[0],par.pos[backcompat].r[1]),par.pos[backcompat].c) : xy;
-      }
+      Object.keys(par.pos).forEach((bc) => {  // 'n' or 'o', e.g.
+        let xy = par.pos[bc];
+        par.pos[bc] = (typeof xy.r === 'undefined' || typeof xy.c === 'undefined') ? xy : constructXY([],range(xy.r[0],xy.r[1]),xy.c);
+      });
   }
 }
 console.log( JSON.stringify(configurations,null,2) );
@@ -140,7 +140,12 @@ const SubsForm0CoordEach = (age,k) => SubsInNewForm(
   ,{ para:dbDefCol["tally.para"].pos[age][k],rows: [],prof:dbDefCol["tally.prof"].pos[age][k] }
 );
 
-const regexify = (RE) => RE.map( (re)=>(typeof re === 'object') ? re : new RegExp(re) );
+const regexify = (RE) => RE.map((rule)=>{
+  if(typeof rule === 'object')  return rule;
+  let expression = rule.match(/^([\W\{])(.+)[\1\}]$/);
+  if( expression !== null )  rule = expression[2];
+  return (new RegExp(rule));
+});
 
 module.exports = {
   projectfolders : configurations.projectrootfolders,

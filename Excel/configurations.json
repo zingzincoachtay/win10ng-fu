@@ -97,7 +97,7 @@
       "profit%" : {"name":"Profit %","init":   0,"pos":{"n":{"c":["Z","Q","H"],"r":[42,42]},"o":{"c":["H"],"r":[64,64]}},"repeat":false}
     },
     "tally.prof" : {
-      "total"       : {"name":"Current Total"      ,"init":   0,"pos":{"n":{"c":["AA","R","I"],"r":[46,46]},"o":{"c":["I","J"],"r":[68,68]}},"repeat":false},
+      "total"       : {"name":"Current Total"      ,"init":   0,"pos":{"n":{"c":["AA","R","I"],"r":[46,46]},"o":{"c":["I","J"],"r":[69,69]}},"repeat":false},
       "mat_subtot"  : {"name":"Material Sub"       ,"init":   0,"pos":{"n":{"c":["AA","R","I"],"r":[31,31]},"o":{"c":["I","J"],"r":[25,25]}},"repeat":false},
       "vmat_subtot" : {"name":"Vendor Material Sub","init":   0,"pos":{"n":{"c":["AA","R","I"],"r":[31,31]},"o":{"c":["I","J"],"r":[35,35]}},"repeat":false},
       "proc_subtot" : {"name":"Process Sub"        ,"init":   0,"pos":{"n":{"c":["AA","R","I"],"r":[40,40]},"o":{"c":["I","J"],"r":[48,48]}},"repeat":false},

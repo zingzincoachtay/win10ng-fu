@@ -1,7 +1,5 @@
 const masked = require('./excelligator-masked.js');
-//console.log(JSON.stringify(masked.getSubsNewFormDefault()));console.log(JSON.stringify(masked.getSubsNewFormPosition()));
 let NewFormVisibleCells = masked.SubsNewForm0Position;
-//console.log(JSON.stringify(masked.getSubsOldFormDefault()));console.log(JSON.stringify(masked.getSubsOldFormPosition()));
 let OldFormVisibleCells = masked.SubsOldForm0Position;
 
 const MakerColumn = 'A';
