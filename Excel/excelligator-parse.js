@@ -7,33 +7,28 @@ const pickSheetName = (proposedNames) => {
     let isValid = scope.setSheetNamesVariants.map( (re)=>re.test(n) );
     return isValid.includes(true);
   });
-  return (validNames.length==0) ? '' : validNames[0];
+  return (proposedNames.length==1) ? proposedNames[0] : (validNames.length==0) ? '' : validNames[0];
 }
 const getWBp = (target) => {
-  let Sheets = (typeof Excel.readFile(target) !== 'undefined') ? Excel.readFile(target) : [];
-  let SheetName = (typeof Sheets.SheetNames !== 'undefined') ? pickSheetName(Sheets.SheetNames) : '';
-  if(SheetName.length==0) return [];//will stop when Sheets.SheetNames was undefined
-  let Sheet = (typeof Sheets.Sheets[SheetName] !== 'undefined') ? Sheets.Sheets[SheetName] : [];
-  return Sheet;
+  let Sheets = Excel.readFile(target) || [];
+  let SheetName = pickSheetName(Sheets.SheetNames || []);
+  return Sheets.Sheets[SheetName] || [];
 }
 
 const testType = function(data,fp){
   //Workbook or Sheets were unexpected, were malformed.
-  let isUndef = fp.map( (jetty)=>(typeof data[jetty] === 'undefined')                     );
+  let isUndef = fp.map( (jetty)=>(typeof jetty !== 'undefined' && typeof data[jetty] === 'undefined')                     );
   //to extract and compare `calculated` vs `entered`
   //let values = fp.map( (jetty)=>(typeof data[jetty] === 'undefined') ? '' : data[jetty].f );
-  let values =  fp.map( (jetty)=>(typeof data[jetty] === 'undefined') ? 0 : data[jetty].v );
+  let values =  fp.map( (jetty)=>(typeof data[jetty] === 'undefined') ? 0 : data[jetty].v );console.log(JSON.stringify(`${fp} = ${isUndef} + ${values} - `+(typeof data),null,2));
   return {'likely':!isUndef.includes(true),'values':values};
 }
 const getSheetType = function(target){
   let Sheet = getWBp(target);
   let fp = {
-    'newcellhist':{},
-    'newcellsubs':{},
-    'oldcellhist':{},
-    'oldcellsubs':{},
-    'isnew':false,
-    'isold':false
+    'newcellhist':{},  'newcellsubs':{},
+    'oldcellhist':{},  'oldcellsubs':{},
+    'isnew':false,  'isold':false
   };
   fp.newcellhist = testType(Sheet,scope.getNewCellHistFingerprint);
   fp.newcellsubs = testType(Sheet,scope.getNewCellSubsFingerprint);
@@ -43,7 +38,7 @@ const getSheetType = function(target){
   // If the new form was not detected, assume the old form and be backward compatible.
   // Judge by Sheet['!ref']?
   //fp.isold = (!fp.isnew && fp.oldcellhist.likely && fp.oldcellsubs.likely);
-  fp.isold = (!fp.isnew);
+  fp.isold = (!fp.isnew);console.log(`${target} = `+JSON.stringify(fp.oldcellhist,null,2));
   return fp;
 }
 

@@ -5,7 +5,7 @@
   ],
   "osURIlist" : "URIlist.csv",
   "URIColumn" : "G",
-  "SheetNamesVariants" : ["^Sheet\\d$","^Return form\\s?\\(\\d\\)$"],
+  "SheetNamesVariants" : ["^Sheet\\s?\\d$","^Return form\\s?\\(\\d\\)$","^Return form$"],
   "includeFiles" : ["01 Current Quote.+xlsx?$"],
   "excludeFiles" : ["SERVICE|BUILDOUT|~"],
   "dirinterpreter" : {

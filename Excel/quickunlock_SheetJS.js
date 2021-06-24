@@ -1,13 +1,7 @@
-var Excel;
-if(typeof require !== 'undefined') Excel = require('xlsx');
+const quick = require('./quick-main.js');
 
-var process;
-if(typeof require !== 'undefined') process = require('process');
-if(process.argv.length<3){console.log("No Target File.");exit;}
-let yargs = process.argv.slice(2);
-let target = (yargs.length>0) ? yargs[0] : [];//console.log(target);
-
-let Sheets = (typeof Excel.readFile(target) !== 'undefined') ? Excel.readFile(target) : [];
+let target = quick.yargs(quick.process.argv);
+let Sheets = quick.Excel.readFile(target[0]) || [];
 
 //let Sheet = (typeof Sheets.Sheets.Sheet1 !== 'undefined') ? Sheets.Sheets.Sheet1 : [];
 let namedSheets = Sheets.SheetNames[0];
