@@ -1,6 +1,5 @@
 const scope = require('./excelligator-scope.js');
-var Excel;
-if(typeof require !== 'undefined') Excel = require('xlsx');
+const Excel = (typeof require !== 'undefined') ? require('xlsx') : {};
 
 const pickSheetName = (proposedNames) => {
   let validNames = proposedNames.filter(function(n){
@@ -15,12 +14,13 @@ const getWBp = (target) => {
   return Sheets.Sheets[SheetName] || [];
 }
 
+const csvsafe = (s) => s.v || undefined;
 const testType = function(data,fp){
   //Workbook or Sheets were unexpected, were malformed.
   let isUndef = fp.map( (jetty)=>(typeof jetty !== 'undefined' && typeof data[jetty] === 'undefined')                     );
   //to extract and compare `calculated` vs `entered`
   //let values = fp.map( (jetty)=>(typeof data[jetty] === 'undefined') ? '' : data[jetty].f );
-  let values =  fp.map( (jetty)=>(typeof data[jetty] === 'undefined') ? 0 : data[jetty].v );console.log(JSON.stringify(`${fp} = ${isUndef} + ${values} - `+(typeof data),null,2));
+  let values =  fp.map( (jetty)=>(typeof data[jetty] === 'undefined') ? 0 : csvsafe(data[jetty]) );
   return {'likely':!isUndef.includes(true),'values':values};
 }
 const getSheetType = function(target){
@@ -38,18 +38,17 @@ const getSheetType = function(target){
   // If the new form was not detected, assume the old form and be backward compatible.
   // Judge by Sheet['!ref']?
   //fp.isold = (!fp.isnew && fp.oldcellhist.likely && fp.oldcellsubs.likely);
-  fp.isold = (!fp.isnew);console.log(`${target} = `+JSON.stringify(fp.oldcellhist,null,2));
+  fp.isold = (!fp.isnew);
   return fp;
 }
 
 const traverse = (trails,O) => (trails.length>0) ? traverse(trails.slice(1),O[trails[0]]) : O;
 //const setfield = (trails,O) => ({[trails[0]]:(trails.length>1) ? setfield(trails.slice(1),O) : O});
-const csvsafe = (s) => s;
 const iterableField = (data,values,fields) => {
   let o = fields;
   for(let k=1;k<fields.length;k++){
-    for(const [key,jetty] of Object.entries(fields[k]))
-      o[k][key] = (typeof data[jetty] === 'undefined') ? o[k][key] : csvsafe(data[jetty].v);// keep default values, or static string, "NF"?
+    for(const [ay,jetty] of Object.entries(fields[k]))
+      o[k][ay] = (typeof data[jetty] === 'undefined') ? o[k][ay] : csvsafe(data[jetty]);// keep default values, or static string, "NF"?
   }
   return o;
 }
@@ -75,8 +74,6 @@ const decodeURI = function(uri){
 const completePages = (common,pages) => pages.map( (p)=>Object.assign(common,p) );
 // expectation: [{common,p1},{common,p2},{common,p3}]
 // error: [{common,p3},{common,p3},{common,p3}]
-
-const readCellValue = (data,jetty) => (typeof data[jetty] === 'undefined') ? 0 : data[jetty].v;
 
 module.exports.getColumn = (target,columns) => columns.map( (column)=>function(target,column){
   let Sheet = getWBp(target);

@@ -1,5 +1,5 @@
-const pc = require('process');//console.log(pc.argv);
-const path = require('path');
+const pc = (typeof require !== 'undefined') ? require('process') : {};
+const path = (typeof require !== 'undefined') ? require('path') : {};
 //__dirname
 //__filename
 const scope = require('./excelligator-scope.js');
@@ -22,7 +22,7 @@ console.log("N(Target Files): "+URI.length);
 console.log("Finished crawling.");
 
 console.log("Ready to read...");
-    var digest = (DisableExcelligator) ? scope.importJSONdata(pc.argv[2]+".json","[]") : parse.getDigest(URI);
+    var digest = (DisableExcelligator) ? scope.importJSONdata(pc.argv[2]+".json") : parse.getDigest(URI);
         ofile.courier    (pc.argv[2]+".json",JSON.stringify(digest));
         ofile.courier    (pc.argv[2]        ,ofile.makeCSV (digest,['sheet','total','age']));
         ofile.courierXLSX(pc.argv[2]        ,ofile.makeXLSX(digest,['sheet','total','age']));

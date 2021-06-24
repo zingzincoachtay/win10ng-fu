@@ -1,12 +1,14 @@
-var fs = require('fs');
+const fs = (typeof require !== 'undefined') ? require('fs') : {};
+
 const config = "configurations.json";
-const importJSONdata = function(file,data){
+
+const importJSONdata = function(file,data={}){
   try {
       data = fs.readFileSync(file, 'utf8');
   } catch (err) {
       console.log(`Error reading '${file}' from disk: ${err}`);
       try {
-        fs.writeFileSync(file,"{}");  //fs.writeFileSync(configJSON, monitor.settings.default);
+        fs.writeFileSync(file,data);  //fs.writeFileSync(configJSON, monitor.settings.default);
       } catch(err) {
         console.error(`Failed to create '${file}' into disk: ${err}`);
       }
@@ -15,10 +17,7 @@ const importJSONdata = function(file,data){
 }
 //const range = (k,j) => (k === j) ? [k] : [k, ...range(k+1,j)];
 const range = (k,j) => (new Array(j-k+1)).fill(undefined).map((_,i)=>k+i);
-const constructXY = function(constructed,xyr,xyc){
-  for(let r of xyr)  constructed.push( xyc.map( (c)=>c+r ) );  // yield an array of arrays
-  return constructed;
-}
+const constructXY = (xyr,xyc) => xyr.map((r)=>xyc.map( (c)=>c+r ));  // yield an array of arrays
 const constructRepeatables = function(constructed,keys,aoa){
   let O = (keys.length==0) ? {} : Object.assign(...aoa);
   let aoacount = [];  let setcount = [];
@@ -37,7 +36,7 @@ const constructRepeatables = function(constructed,keys,aoa){
 const traverse = (trails,O) => (trails.length>0) ? traverse(trails.slice(1),O[trails[0]]) : O;
 const mapobj = (trails,_O) => ({[trails[0]]:(trails.length>1) ? mapobj(trails.slice(1),_O) : _O});
 
-let configurations = importJSONdata(config,"{}");
+let configurations = importJSONdata(config);
 let setEmptyRowsize = {};//"n":0,"o":0
 let setEmptyRevsize = {};//"n":0,"o":0
 for(let name of configurations.dbKeyDefCol){
@@ -65,7 +64,7 @@ for(let name of configurations.dbKeyDefCol){
   for(let [col,par] of Object.entries(configurations.dbDefCol[name])){
       Object.keys(par.pos).forEach((bc) => {  // 'n' or 'o', e.g.
         let xy = par.pos[bc];
-        par.pos[bc] = (typeof xy.r === 'undefined' || typeof xy.c === 'undefined') ? xy : constructXY([],range(xy.r[0],xy.r[1]),xy.c);
+        par.pos[bc] = (typeof xy.r === 'undefined' || typeof xy.c === 'undefined') ? xy : constructXY(range(xy.r[0],xy.r[1]),xy.c);
       });
   }
 }

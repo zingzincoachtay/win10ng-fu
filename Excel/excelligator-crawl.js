@@ -1,5 +1,5 @@
-var fs = require('fs');
-var path = require('path');
+const fs = (typeof require !== 'undefined') ? require('fs') : {};
+const path = (typeof require !== 'undefined') ? require('path') : {};
 
 const getAllFiles = (root, files) => {
   let contents = fs.readdirSync(root);

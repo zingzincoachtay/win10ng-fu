@@ -1,6 +1,5 @@
-const fs = require('fs');
-var Excel;
-if(typeof require !== 'undefined') Excel = require('xlsx');
+const fs = (typeof require !== 'undefined') ? require('fs') : {};
+const Excel = (typeof require !== 'undefined') ? require('xlsx') : {};
 
 const json2sheet = (o,h) => Excel.utils.json_to_sheet(o,{header:h});
 const aoa2sheet  = (o,h) => Excel.utils.aoa_to_sheet( o,{header:h});
