@@ -1,14 +1,14 @@
 const fs = (typeof require !== 'undefined') ? require('fs') : {};
 
-const config = "configurations.json";
+const config = "configurations";
 
 const importJSONdata = function(file,data={}){
   try {
-      data = fs.readFileSync(file, 'utf8');
+      data = fs.readFileSync(file+".json", 'utf8');
   } catch (err) {
       console.log(`Error reading '${file}' from disk: ${err}`);
       try {
-        fs.writeFileSync(file,data);  //fs.writeFileSync(configJSON, monitor.settings.default);
+        fs.writeFileSync(file+".json",data);  //fs.writeFileSync(configJSON, monitor.settings.default);
       } catch(err) {
         console.error(`Failed to create '${file}' into disk: ${err}`);
       }
@@ -53,7 +53,7 @@ for(let name of configurations.dbKeyDefCol){
     }
   }
 }
-configurations.Referrer = (0) ? configurations.Referrer : Object.assign(configurations.Referrer,...Object.keys(configurations.dbDefCol).map( (e)=>({[e]:Object.keys(configurations.dbDefCol[e]).sort()}) ))
+configurations.Referrer = (configurations.EnableReferrerPrefill) ? configurations.Referrer : Object.assign(configurations.Referrer,...Object.keys(configurations.dbDefCol).map( (e)=>({[e]:Object.keys(configurations.dbDefCol[e]).sort()}) ))
 configurations.bookmark = Object.assign(...configurations.dbKeyDefCol.map( (e)=>mapobj(e.split(/\W+/g),e) ));
 
 console.log( JSON.stringify(configurations,null,2) );
@@ -147,9 +147,12 @@ const regexify = (RE) => RE.map((rule)=>{
 });
 
 module.exports = {
-  projectfolders : configurations.projectrootfolders,
+  DisableExcelligator : configurations.DisableExcelligator,
+  projectfolders   : configurations.projectrootfolders,
+  projectdatabases : configurations.projectdatabases,
   osURIlist      : configurations.osURIlist,
   URIColumn      : configurations.URIColumn,
+  FlattenDB      : configurations.FlattenDB,
   includeFilesRegex  : regexify(configurations.includeFiles),
   excludeFilesRegex  : regexify(configurations.excludeFiles),
   loadDependencies   : configurations.dependencies,

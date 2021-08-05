@@ -7,33 +7,43 @@ const crawl = require('./excelligator-crawl.js');
 const parse = require('./excelligator-parse.js');
 const ofile = require('./excelligator-output.js');
 
-const DisableExcelligator = false;//false - crawl, not read from db; true - not crawl, read from db
+//DisableExcelligator =; false - crawl, not read from db; true - not crawl, read from db
+const digestDB = pc.argv[2] || scope.getProjectDBF[2];
+const detailDB = pc.argv[3] || scope.getProjectDBF[3];
 
 console.log("Ready to crawl...");
-    // Get the URIs in CSV as a list -- pick one
-    // 1 - Get from a pre-made list with FindUtil and Grep Gnuwin32 tools
-    //      function(
-    //        arg1 ... path to the CSV file that lists the paths to the Excel files
-    //        arg2 ... column that contains the paths to the target Excel files
+    // Get the URIs as a list -- pick one
+    // 1 - Get a list from db
+    //       arg1 ... path to the db that lists the paths to the target Excel files
+    //       arg2 ... column in the db that lists the paths to the target Excel files
     // 2 - Build a list by crawling
-    var URI = (DisableExcelligator) ? parse.getColumn(scope.getURITarget,scope.getURIColumn) : crawl.getEssentials( crawl.findFiles(scope.getProjectURI),scope.getIncludeRegex,scope.getExcludeRegex );
+	//       arg1 ... all files found in the given directories
+	//         arg1 ... a list of directories to crawl
+	//       arg2 ... filename rules to include files
+	//       arg3 ... filename rules to exclude files
+    var URI = (scope.DisableExcelligator) ? parse.getColumn(scope.getURITarget,scope.getURIColumn) : crawl.getEssentials( crawl.findFiles(scope.getProjectURI),scope.getIncludeRegex,scope.getExcludeRegex );
     URI = URI.map( (e)=>(typeof e === 'string') ? path.normalize(e) : e );
 console.log("N(Target Files): "+URI.length);
 console.log("Finished crawling.");
+// db will also be made
 
 console.log("Ready to read...");
-    var digest = (DisableExcelligator) ? scope.importJSONdata(pc.argv[2]+".json") : parse.getDigest(URI);
-        ofile.courier    (pc.argv[2]+".json",JSON.stringify(digest));
-        ofile.courier    (pc.argv[2]        ,ofile.makeCSV (digest,['sheet','total','age']));
-        ofile.courierXLSX(pc.argv[2]        ,ofile.makeXLSX(digest,['sheet','total','age']));
+    var digest = (scope.DisableExcelligator) ? scope.importJSONdata(digestDB,"{}") : parse.getDigest(URI);
+        ofile.courier    (digestDB,ofile.makeCSV (digest,['sheet','total','age']));
+        ofile.courierXLSX(digestDB,ofile.makeXLSX(digest,['sheet','total','age']));
 console.log("Digest complete.");
+// json will also be made
+        ofile.courier    (digestDB+".json",JSON.stringify(digest));
 
 console.log("Ready to read...");
-    var detail = (DisableExcelligator) ? {"dump":scope.importJSONdata(pc.argv[3],"[]"),"index":new Map(scope.importJSONdata(pc.argv[3]+"i","[]"))} : parse.getDetail(URI);
-        ofile.courier    (pc.argv[3]        ,JSON.stringify(           detail.dump  ,null,2) );
-        ofile.courier    (pc.argv[3]+"i"    ,JSON.stringify(Array.from(detail.index),null,2) );// Map object
-        //ofile.courier    (scope.getURITarget,ofile.makeCSV (ofile.makeIndexImportable(detail.dump,detail.index,scope.getDatabaseBlueprint),[]));
-        //ofile.courierXLSX(scope.getURITarget,ofile.makeXLSX(ofile.makeIndexImportable(detail.dump,detail.index,scope.getDatabaseBlueprint),[]));
-        ofile.courier    (pc.argv[4]        ,ofile.makeCSV (ofile.makeDumpImportable (detail.dump,detail.index,scope.getDatabaseBlueprint),[]));
-        ofile.courierXLSX(pc.argv[4]        ,ofile.makeXLSX(ofile.makeDumpImportable (detail.dump,detail.index,scope.getDatabaseBlueprint),[]));
+    var detail = (scope.DisableExcelligator) ? {"dump":scope.importJSONdata(scope.getParsedData,"{}"),"index":new Map(scope.importJSONdata(scope.getParsedData+"i","{}"))} : parse.getDetail(URI);
+        ofile.courier    (scope.getURITarget,ofile.makeCSV (ofile.makeIndexImportable(detail.dump,detail.index,scope.getDatabaseBlueprint),[]));
+        ofile.courierXLSX(scope.getURITarget,ofile.makeXLSX(ofile.makeIndexImportable(detail.dump,detail.index,scope.getDatabaseBlueprint),[]));
+        ofile.courier    (          detailDB,ofile.makeCSV (ofile.makeDumpImportable(detail.dump,detail.index,scope.getDatabaseBlueprint),[]));
+        ofile.courierXLSX(          detailDB,ofile.makeXLSX(ofile.makeDumpImportable(detail.dump,detail.index,scope.getDatabaseBlueprint),[]));
+console.log("Detail complete.");
+// dump will also be made - used to be `quoted.db`
+        ofile.courier    (scope.getParsedData+ ".json",JSON.stringify(           detail.dump  ,null,2) );
+        ofile.courier    (scope.getParsedData+"i.json",JSON.stringify(Array.from(detail.index),null,2) );// Map object
+
 console.log("Aggregator complete.");

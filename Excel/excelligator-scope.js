@@ -31,12 +31,15 @@ const OldSubsCell = [
 ];
 
 module.exports = {
+  DisableExcelligator : masked.DisableExcelligator,
   getProjectURI : masked.projectfolders,
+  getProjectDBF : masked.projectdatabases,
   getIncludeRegex : masked.includeFilesRegex,
   getExcludeRegex : masked.excludeFilesRegex,
   getDependencies : masked.loadDependencies,
   getURITarget : masked.osURIlist,
   getURIColumn : masked.URIColumn,
+  getParsedData : masked.FlattenDB,
   initSpread : {'maker':MakerColumn,'ospart':PartColumn,'target':masked.URIColumn},
   getCellFingerprint: {
     "getNewCellHistFingerprint": NewHistCell,

@@ -68,18 +68,18 @@ const iterablePage = (target,values,cells) => {
   return o;
 }
 const decodeURI = function(uri){
-  let groups = uri.match( new RegExp(scope.getDatabaseBlueprint.dirinterpreter.re) );
+  let groups = uri.match( new RegExp(scope.getDatabaseBlueprint.dirinterpreter.re) ) || (new Array(scope.getDatabaseBlueprint.dirinterpreter.pick.length)).fill(uri);
   return scope.getDatabaseBlueprint.dirinterpreter.pick.map( (e)=>groups[e] );
 }
 const completePages = (common,pages) => pages.map( (p)=>Object.assign(common,p) );
 // expectation: [{common,p1},{common,p2},{common,p3}]
 // error: [{common,p3},{common,p3},{common,p3}]
 
-module.exports.getColumn = (target,columns) => columns.map( (column)=>function(target,column){
+module.exports.getColumn = function(target,columns){
   let Sheet = getWBp(target);
-  let Lookout = Object.keys(Sheet).filter( (c)=>(new RegExp('^'+column,'i')).test(c) );
+  let Lookout = Object.keys(Sheet).filter( (c)=>(new RegExp('^'+columns.join(),'i')).test(c) );
   return Lookout.map( (r)=>Sheet[r].v );
-} );
+}
 
 const pickLatest = (vals) => (vals.length==0) ? 0 : (vals[0]>0) ? vals[0] : pickLatest(vals.slice(1));
 module.exports.getDigest = function(uri,readExcel=[]){
