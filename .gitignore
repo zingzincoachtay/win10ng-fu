@@ -3,3 +3,6 @@ settings.json
 tracking-masked.bat
 quo*
 candidate*
+*.exe
+*.app
+

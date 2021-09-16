@@ -6,9 +6,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "pkg" : {
-    "assets" : [],
-    "targets" : ["node14-linux-x64", "node14-macos-x64", "node14-win-x64"]
+  "pkg": {
+    "assets": [],
+    "targets": [
+      "node14-linux-x64",
+      "node14-macos-x64",
+      "node14-win-x64"
+    ]
   },
   "keywords": [
     "Excel",
@@ -19,8 +23,8 @@
     "parsing",
     "database"
   ],
-  "dependencies" : {
-
+  "dependencies": {
+    "pkg": "^5.3.1"
   },
   "author": "Tay",
   "license": "GPL-3.0-or-later"
