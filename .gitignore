@@ -5,4 +5,7 @@ quo*
 candidate*
 *.exe
 *.app
+*-linux
+*-macos
+*-win.exe
 
